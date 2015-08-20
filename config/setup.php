@@ -43,4 +43,4 @@ echo "Success, your sites will be available at the following urls:";
 foreach ( $sites as $site ) {
   echo "http://$site:8080/";
 }
-echo "Make sure this line is in your hosts file:\n127.0.0.0 ". implode( ' ', $sites );
+echo "Make sure this line is in your hosts file:\n127.0.0.1\t". implode( ' ', $sites );
