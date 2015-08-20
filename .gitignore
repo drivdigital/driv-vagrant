@@ -2,3 +2,4 @@
 /database/*.sql
 .DS_Store
 /*.local
+/config/*.local.conf
