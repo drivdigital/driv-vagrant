@@ -4,8 +4,14 @@
  * This file is run by the provision step of vagrant up
  */
 
+
 chdir( '/vagrant' );
 $dirs = glob( '*.local' );
+
+// A temporary fix for the 403 by apache
+// (Until the box is rebuilt with a propper apache config file)
+if ( file_exists( 'config/tmp-fix-403.php' ) )
+  require_once 'config/tmp-fix-403.php';
 
 // Load the vhost template
 $vhost_template = file_get_contents( 'config/vhost.conf' );
@@ -15,6 +21,10 @@ foreach ( $dirs as $dir ) {
   // Skip non-dirs
   if ( !is_dir( $dir ) )
     continue;
+
+  /**
+   * APACHE2 - BEGIN
+   */
 
   // Get the site name
   $site = basename( $dir );
@@ -31,6 +41,26 @@ foreach ( $dirs as $dir ) {
   // Enable the site
   `ln -s '/vagrant/config/$site.conf' /etc/apache2/sites-available`;
   `a2ensite '$site'`;
+
+  /**
+   * APACHE2 - END
+   */
+
+
+  /**
+   * DATABASE - BEGIN
+   */
+
+  $db_name = preg_replace( '/\W/', '_', $site );
+  `mysql -u root -e "CREATE DATABASE IF NOT EXISTS $db_name"`;
+  if ( file_exists( "database/$site.sql" ) ) {
+    `mysql -u root $db_name < "database/$site.sql"`;
+  }
+  echo "Set up database: '$db_name'";
+
+  /**
+   * DATABASE - END
+   */
 
   $sites[] = $site;
 }
