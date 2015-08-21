@@ -69,8 +69,8 @@ foreach ( $dirs as $dir ) {
 `service apache2 restart`;
 
 // Success
-echo "Success, your sites will be available at the following urls:";
+echo "Success, your sites will be available at the following urls:\n";
 foreach ( $sites as $site ) {
-  echo "http://$site:8080/";
+  echo "http://$site:8080/\n";
 }
 echo "Make sure this line is in your hosts file:\n127.0.0.1\t". implode( ' ', $sites );
