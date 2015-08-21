@@ -28,18 +28,16 @@ foreach ( $dirs as $dir ) {
 
   // Get the site name
   $site = basename( $dir );
-  echo "Creating vhost for $site";
+  echo "Setting up vhost for $site\n";
 
-  // Create the site vhost file
-  $site_vhost = str_replace( '%SITE', $site, $vhost_template );
-  file_put_contents( "config/$site.conf", $site_vhost );
-
-  // Remove vhost file if it exists
-  if ( file_exists( "/etc/apache2/sites-available/$site.conf" ) )
-    unlink( "/etc/apache2/sites-available/$site.conf" );
+  if ( !file_exists( "/etc/apache2/sites-available/$site.conf" ) ) {
+    // Create the site vhost file
+    $site_vhost = str_replace( '%SITE', $site, $vhost_template );
+    file_put_contents( "config/$site.conf", $site_vhost );
+    `ln -s '/vagrant/config/$site.conf' /etc/apache2/sites-available`;
+  }
 
   // Enable the site
-  `ln -s '/vagrant/config/$site.conf' /etc/apache2/sites-available`;
   `a2ensite '$site'`;
 
   /**
@@ -56,7 +54,7 @@ foreach ( $dirs as $dir ) {
   if ( file_exists( "database/$site.sql" ) ) {
     `mysql -u root $db_name < "database/$site.sql"`;
   }
-  echo "Set up database: '$db_name'";
+  echo "Set up database: '$db_name'\n";
 
   /**
    * DATABASE - END
