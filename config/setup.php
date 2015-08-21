@@ -63,6 +63,10 @@ foreach ( $dirs as $dir ) {
   $sites[] = $site;
 }
 
+// Apply local changes
+if ( file_exists( "database/local.sql" ) )
+  `mysql -u root < "database/local.sql"`;
+
 // Restart apache
 `service apache2 restart`;
 
