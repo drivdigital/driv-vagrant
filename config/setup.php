@@ -31,12 +31,15 @@ foreach ( $dirs as $dir ) {
   echo "Setting up vhost for $site\n";
   $sites[] = $site;
 
-  if ( !file_exists( "/etc/apache2/sites-available/$site.conf" ) ) {
-    // Create the site vhost file
+  // Create the site vhost file
+  if ( !file_exists( "config/$site.conf" ) ) {
     $site_vhost = str_replace( '%SITE', $site, $vhost_template );
     file_put_contents( "config/$site.conf", $site_vhost );
-    `ln -s '/vagrant/config/$site.conf' /etc/apache2/sites-available`;
   }
+
+  // Link the vhost conf to apache2
+  if ( !file_exists( "/etc/apache2/sites-available/$site.conf" ) )
+    `ln -s '/vagrant/config/$site.conf' /etc/apache2/sites-available`;
 
   // Enable the site
   `a2ensite '$site'`;
