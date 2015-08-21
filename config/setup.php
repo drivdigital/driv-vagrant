@@ -29,6 +29,7 @@ foreach ( $dirs as $dir ) {
   // Get the site name
   $site = basename( $dir );
   echo "Setting up vhost for $site\n";
+  $sites[] = $site;
 
   if ( !file_exists( "/etc/apache2/sites-available/$site.conf" ) ) {
     // Create the site vhost file
@@ -48,7 +49,11 @@ foreach ( $dirs as $dir ) {
   /**
    * DATABASE - BEGIN
    */
+  // Check the db-lock file
+  if ( file_exists( '/.db-installed' ) )
+    continue;
 
+  // No lock in place, go ahead.
   $db_name = preg_replace( '/\W/', '_', $site );
   `mysql -u root -e "CREATE DATABASE IF NOT EXISTS $db_name"`;
   if ( file_exists( "database/$site.sql" ) ) {
@@ -60,8 +65,10 @@ foreach ( $dirs as $dir ) {
    * DATABASE - END
    */
 
-  $sites[] = $site;
 }
+
+// Create a lock file for databases
+`touch /.db-installed`;
 
 // Apply local changes
 if ( file_exists( "database/local.sql" ) )
