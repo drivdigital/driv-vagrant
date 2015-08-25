@@ -58,6 +58,8 @@ foreach ( $dirs as $dir ) {
 
   // No lock in place, go ahead.
   $db_name = preg_replace( '/\W/', '_', $site );
+  // Remove the local bit at the end
+  $db_name = preg_replace( '/_local$/', '', $db_name );
   `mysql -u root -e "CREATE DATABASE IF NOT EXISTS $db_name"`;
   if ( file_exists( "database/$site.sql" ) ) {
     `mysql -u root $db_name < "database/$site.sql"`;
