@@ -61,8 +61,8 @@ foreach ( $dirs as $dir ) {
   // Remove the local bit at the end
   $db_name = preg_replace( '/_local$/', '', $db_name );
   `mysql -u root -e "CREATE DATABASE IF NOT EXISTS $db_name"`;
-  if ( file_exists( "database/$site.sql" ) ) {
-    `mysql -u root $db_name < "database/$site.sql"`;
+  if ( file_exists( "database/$db_name.sql" ) ) {
+    `mysql -u root $db_name < "database/$db_name.sql"`;
   }
   echo "Set up database: '$db_name'\n";
 
