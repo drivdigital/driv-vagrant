@@ -80,6 +80,8 @@ foreach ( $dirs as $dir ) {
 // Create a lock file for databases
 `touch /.db-installed`;
 `chmod 744 save-db`;
+// Add the command
+`echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.zshrc`;
 
 // Apply local changes
 if ( file_exists( "database/local.sql" ) )
