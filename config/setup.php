@@ -15,6 +15,9 @@ if ( file_exists( 'config/tmp-fix-wpcli.php' ) )
 // Load the vhost template
 $vhost_template = file_get_contents( 'config/vhost.conf' );
 
+// Create a tool to save databases
+`echo "#!/bin/sh" > save-db`;
+
 $sites = [];
 foreach ( $dirs as $dir ) {
   // Skip non-dirs
@@ -65,6 +68,9 @@ foreach ( $dirs as $dir ) {
   }
   echo "Set up database: '$db_name'\n";
 
+  // Add the database to the saving tool
+  `echo "mysqldump -u root $db_name > database/$db_name.sql" >> save-db`;
+
   /**
    * DATABASE - END
    */
@@ -73,6 +79,7 @@ foreach ( $dirs as $dir ) {
 
 // Create a lock file for databases
 `touch /.db-installed`;
+`chmod 744 save-db`;
 
 // Apply local changes
 if ( file_exists( "database/local.sql" ) )

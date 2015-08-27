@@ -4,3 +4,4 @@
 /*.local
 /config/*.local.conf
 /wp-cli.phar
+/save-db
