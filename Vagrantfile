@@ -7,6 +7,7 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=774','fmode=775']
   config.vm.provision "shell", inline: <<-SHELL
     usermod -a -G vagrant www-data
+    git config core.fileMode false
     sudo php /vagrant/config/setup.php
   SHELL
 end
