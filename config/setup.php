@@ -8,10 +8,9 @@
 chdir( '/vagrant' );
 $dirs = glob( '*.local' );
 
-// A temporary fix for the 403 by apache
-// (Until the box is rebuilt with a propper apache config file)
-if ( file_exists( 'config/tmp-fix-403.php' ) )
-  require_once 'config/tmp-fix-403.php';
+// A temporary fix for to add wpcli to the box
+if ( file_exists( 'config/tmp-fix-wpcli.php' ) )
+  require_once 'config/tmp-fix-wpcli.php';
 
 // Load the vhost template
 $vhost_template = file_get_contents( 'config/vhost.conf' );
