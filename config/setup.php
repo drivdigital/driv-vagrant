@@ -64,7 +64,9 @@ foreach ( $dirs as $dir ) {
   $db_name = preg_replace( '/_local$/', '', $db_name );
   `mysql -u root -e "CREATE DATABASE IF NOT EXISTS $db_name"`;
   if ( file_exists( "database/$db_name.sql" ) ) {
-    `mysql -u root $db_name < "database/$db_name.sql"`;
+    `echo 'SET foreign_key_checks=0;' > .tmp.sql`;
+    `cat "database/$db_name.sql" >> .tmp.sql`;
+    `mysql -u root $db_name < .tmp.sql`;
   }
   echo "Set up database: '$db_name'\n";
 
@@ -76,6 +78,8 @@ foreach ( $dirs as $dir ) {
    */
 
 }
+// Remove temporary sql file
+`rm .tmp.sql`;
 
 // Create a lock file for databases
 `touch /.db-installed`;
