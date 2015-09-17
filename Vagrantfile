@@ -8,7 +8,6 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     usermod -a -G vagrant www-data
     sudo a2enmod rewrite
-    git config core.fileMode false
     sudo php /vagrant/config/setup.php
   SHELL
 end
