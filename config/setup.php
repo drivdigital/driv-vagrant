@@ -95,7 +95,7 @@ if ( file_exists( "database/local.sql" ) )
 `service apache2 restart`;
 
 // Success
-echo "Success, your sites will be available at the following urls:\n";
+echo "Success, your sites are now available at the following urls:\n";
 foreach ( $sites as $site ) {
   echo "http://$site:8080/\n";
 }
