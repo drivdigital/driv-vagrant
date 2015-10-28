@@ -6,7 +6,7 @@
 
 
 chdir( '/vagrant' );
-$dirs = glob( '*.local' );
+$dirs = glob( '*.dev' );
 
 // A temporary fix for to add wpcli to the box
 if ( file_exists( 'config/tmp-fix-wpcli.php' ) )
@@ -60,8 +60,8 @@ foreach ( $dirs as $dir ) {
 
   // No lock in place, go ahead.
   $db_name = preg_replace( '/\W/', '_', $site );
-  // Remove the local bit at the end
-  $db_name = preg_replace( '/_local$/', '', $db_name );
+  // Remove the dev bit at the end
+  $db_name = preg_replace( '/_dev$/', '', $db_name );
   `mysql -u root -e "CREATE DATABASE IF NOT EXISTS $db_name"`;
   if ( file_exists( "database/$db_name.sql" ) ) {
     `echo 'SET foreign_key_checks=0;' > .tmp.sql`;
@@ -87,9 +87,9 @@ foreach ( $dirs as $dir ) {
 // Add the command
 `echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.zshrc`;
 
-// Apply local changes
-if ( file_exists( "database/local.sql" ) )
-  `mysql -u root < "database/local.sql"`;
+// Apply dev changes
+if ( file_exists( "database/dev.sql" ) )
+  `mysql -u root < "database/dev.sql"`;
 
 // Restart apache
 `service apache2 restart`;

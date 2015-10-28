@@ -1,7 +1,7 @@
 .vagrant
 /database/*.sql
 .DS_Store
-/*.local
-/config/*.local.conf
+/*.dev
+/config/*.dev.conf
 /wp-cli.phar
 /save-db
