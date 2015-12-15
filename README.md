@@ -36,7 +36,7 @@
 
 5. Åpne wp-config og gi korrekt db-navn, db-bruker: root og sett db-passord tomt.
 
-6. Opprett en undermappe for vagrant-mappen og kall den "database"
+6. Opprett en undermappe for vagrant-mappen og kall den "database"  
   6.1 Legg databasefilen i denne mappen
 
 7. Endre Site URL og home til korrekt lokal URL ved å lage dev.sql fil. Skriv inn update statement i dev.sql-filen for URL. F.eks:
