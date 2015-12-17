@@ -46,8 +46,8 @@
 7. Change Site URL and home to correct dev URL by creating `dev.sql` file. Enter update statement in dev.sql file URL. For example:
 
 		USE database_name;
-		UPDATE ms_options SET option_value = 'http://website_name:8080' WHERE option_name in ('home', 'siteurl');
-		UPDATE ms_users SET user_pass = MD5( 'vagrant' );
+		UPDATE wp_options SET option_value = 'http://website_name:8080' WHERE option_name in ('home', 'siteurl');
+		UPDATE wp_users SET user_pass = MD5( 'vagrant' );
 
 
 8. Enter the host file via terminal command: `sudo vim /etc/hosts`
