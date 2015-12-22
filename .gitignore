@@ -5,3 +5,4 @@
 /config/*.dev.conf
 /wp-cli.phar
 /save-db
+.idea
