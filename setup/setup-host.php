@@ -3,6 +3,7 @@
 /**
  * This file is run by the provision step of vagrant up
  */
+define( 'PROVISION', TRUE );
 
 chdir( dirname( dirname( __FILE__ ) ) );
 

@@ -1,4 +1,5 @@
 <?php
+defined( 'PROVISION' ) || die();
 
 class setup {
   static function get_sites() {

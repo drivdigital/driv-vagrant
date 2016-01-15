@@ -3,6 +3,7 @@
 /**
  * This file is run by the provision step of vagrant up
  */
+define( 'PROVISION', TRUE );
 
 
 chdir( '/vagrant' );
@@ -63,11 +64,7 @@ foreach ( $sites as $slug => $site ) {
   $dev_sql_created = false;
   if ( 'magento' == $system && !file_exists( "config/$slug/dev.sql" ) ) {
     echo "Copying magento dev.sql\n";
-    $sql = file_get_contents( "setup/magento.sql" );
-    $sql = strtr( $sql, [
-      '%SLUG' => $slug
-    ] );
-    file_put_contents( "config/$slug/dev.sql", $sql );
+    require_once 'setup/magento-admin-user.php';
     $dev_sql_created = true;
   }
   if ( file_exists( "config/$slug/$slug.sql" ) ) {
