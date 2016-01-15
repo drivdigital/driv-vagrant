@@ -28,9 +28,13 @@ else {
 /*
 
 // INSERTED CODE:
+// Self installer - @see setup/magento-admin-user.php
+
 `mysql -u root %SLUG < ../config/%SLUG/.admin-user.sql && rm ../config/%SLUG/.admin-user.sql`;
 // Revert the inserted code:
 $this_file = file_get_contents( __FILE__ );
 $code_pos = strpos( $this_file, '//'.' INSERTED CODE:' );
 $this_file = substr( $this_file, 0, $code_pos -1 );
 file_put_contents( __FILE__, $this_file );
+
+/* Self installer - end */

@@ -1,7 +1,6 @@
 <?php
 
-if ( !defined( 'PROVISION' ) )
-  die();
+defined( 'PROVISION' ) || die();
 
 // APACHE SERVERNAME
 $contents = file_get_contents( '/etc/apache2/apache2.conf' );
