@@ -95,9 +95,14 @@ if ( file_exists( "config/dev.sql" ) && !file_exists( '/.db-installed' ) )
   `mysql -u root < "config/dev.sql"`;
 
 foreach ( $sites as $site ) {
-  if ( file_exists( "$site/vagrant.php" ) ) {
-    echo "Running post install for $site\n";
-    // Vagrant files should start with `defined( 'PROVISION' ) || die();`
+  // Vagrant files should start with `defined( 'PROVISION' ) || die();`
+  if ( file_exists( "config/$site/provision.php" ) ) {
+    //@TODO: && setup::check_provision_file( … ) ) {
+    echo "Running post provision script for $site\n";
+    require_once( "config/$site/provision.php" );
+  }
+  elseif ( file_exists( "$site/vagrant.php" ) ) {
+    echo "Running post provision script for $site\n";
     require_once( "$site/vagrant.php" );
   }
 }
