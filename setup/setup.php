@@ -78,7 +78,7 @@ foreach ( $sites as $slug => $site ) {
     }
   }
   // Add the database to the saving tool
-  `echo "mysqldump -u root $slug > /vagrant/config/$site/$slug.sql" >> save-db`;
+  `echo "mysqldump -u root $slug > /vagrant/config/$slug/$slug.sql" >> save-db`;
 }
 // Remove temporary sql file
 if ( file_exists( '.tmp.sql' ) )

@@ -2,7 +2,7 @@
 /database/*.sql
 .DS_Store
 /*.dev
-/config/*.dev.conf
+/config/*
 /wp-cli.phar
 /save-db
 .idea
