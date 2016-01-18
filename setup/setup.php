@@ -94,6 +94,13 @@ if ( file_exists( '.tmp.sql' ) )
 if ( file_exists( "config/dev.sql" ) && !file_exists( '/.db-installed' ) )
   `mysql -u root < "config/dev.sql"`;
 
+foreach ( $sites as $site ) {
+  if ( file_exists( "$site/vagrant.php" ) ) {
+    echo "Running post install for $site\n";
+    // Vagrant files should start with `defined( 'PROVISION' ) || die();`
+    require_once( "$site/vagrant.php" );
+  }
+}
 // Restart apache
 `service apache2 restart`;
 

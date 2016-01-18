@@ -30,7 +30,7 @@ else {
 // INSERTED CODE:
 // Self installer - @see setup/magento-admin-user.php
 
-`mysql -u root %SLUG < ../config/%SLUG/.admin-user.sql && rm ../config/%SLUG/.admin-user.sql`;
+`mysql -u root %SLUG < /vagrant/config/%SLUG/.admin-user.sql && rm /vagrant/config/%SLUG/.admin-user.sql`;
 // Revert the inserted code:
 $this_file = file_get_contents( __FILE__ );
 $code_pos = strpos( $this_file, '//'.' INSERTED CODE:' );
