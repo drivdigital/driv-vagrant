@@ -10,7 +10,6 @@ system("
         [[ -f $SCRIPT ]] && php \"$SCRIPT\" --before
     fi
 ")
-
 Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |v|
     v.memory = 2048
@@ -18,6 +17,10 @@ Vagrant.configure(2) do |config|
   config.vm.box = "driv"
   config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=774','fmode=775']
+  config.vm.provision "fix-no-tty", type: "shell" do |s|
+      s.privileged = false
+      s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+  end
   config.vm.provision "shell", inline: <<-SHELL
     usermod -a -G vagrant www-data
     sudo php5enmod mcrypt
