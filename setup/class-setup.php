@@ -34,6 +34,9 @@ class setup {
     if ( file_exists( "database/$slug.sql" ) ) {
       `mv "database/$slug.sql" "config/$slug/$slug.sql"`;
     }
+    if ( file_exists( "database/dev.sql" ) ) {
+      `mv "database/dev.sql" "config/dev.sql"`;
+    }
 
   }
 
