@@ -34,10 +34,23 @@ foreach ( $sites as $slug => $site ) {
   setup::update( $slug, $site );
   $system = setup::identify( $slug, $site );
   $db_prefix = setup::db_prefix( $slug, $site, $system );
-  if ( FALSE !== $db_prefix )
-    setup::create_config( $slug, $site, $system, $db_prefix );
 
   // Config files
+  $config_file = setup::get_config_file( $system );
+  if ( $config_file ) {
+    $base_config = basename( $config_file );
+    // Make a copy of the config file
+    if ( file_exists( "$site/$config_file" ) ) {
+      `cp "$site/$config_file" "config/$slug/$base_config"`;
+    }
+    // Insert an existing config file if found
+    if ( !file_exists( "$site/$config_file" ) && file_exists( "config/$slug/$base_config" ) ) {
+      `cp "config/$slug/$base_config" "$site/$config_file"`;
+    }
+  }
+
+  if ( FALSE !== $db_prefix )
+    setup::create_config( $slug, $site, $system, $db_prefix );
 
   // Apache2
   // Create the site vhost file

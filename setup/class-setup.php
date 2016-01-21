@@ -37,6 +37,14 @@ class setup {
 
   }
 
+  static function get_config_file( $system ) {
+    if ( 'wordpress' == $system )
+      return 'wp-config.php';
+    if ( 'magento' == $system )
+      return 'app/etc/local.xml';
+    return FALSE;
+  }
+
   static function identify( $slug, $site ) {
     if ( file_exists( "$site/wp-config-sample.php" ) ) {
       echo "WordPress identified";
@@ -101,7 +109,7 @@ class setup {
   static function db_prefix( $slug, $site, $system ) {
     if ( !file_exists( "config/$slug/$slug.sql" ) )
       return '';
-    $content = `head config/$slug/$slug.sql`;
+    $content = `head -n1000 config/$slug/$slug.sql | grep "CREATE TABLE"`;
     echo "\n\n----------------\n$content\n----------------\n\n";
     if ( 'wordpress' == $system ) {
 
