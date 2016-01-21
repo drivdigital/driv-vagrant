@@ -70,6 +70,7 @@ class setup {
       }
       $contents = file_get_contents( $sample );
       $contents = strtr( [
+        // @TODO:
         '' => ''
       ] );
       file_put_contents( $config, $contents );
@@ -113,14 +114,33 @@ class setup {
     if ( !file_exists( "config/$slug/$slug.sql" ) )
       return '';
     $content = `head -n1000 config/$slug/$slug.sql | grep "CREATE TABLE"`;
-    echo "\n\n----------------\n$content\n----------------\n\n";
-    if ( 'wordpress' == $system ) {
+    // echo "\n\n----------------\n$content\n----------------\n\n";
+    $lines = explode( "\n", $content );
+    $assumed_prefix = FALSE;
+    $wrong_assumption = FALSE;
+    // Loop through each CREATE TABLE line
+    foreach ($lines as $line) {
+      // Detect the table name with some fancy regex
+      if ( preg_match( '/\s`?(\S+_\w+)\W*$/', $line, $matches ) ) {
+        // Break the table name into parts
+        $table = $matches[1];
+        $parts = explode( '_', $table );
 
-    }
-    else if ( 'magento' == $system ) {
+        // No assumption made yet. Make one now
+        if ( !$assumed_prefix )
+          $assumed_prefix = $parts[0];
 
+        // If any table is not prefixed then we have an incorrect assumption
+        if ( $parts[0] != $assumed_prefix )
+          $wrong_assumption = TRUE;
+      }
     }
-    return false;
+
+    if ( !$wrong_assumption ) {
+      echo "Detected \"$assumed_prefix\" as the table prefix";
+      return $assumed_prefix;
+    }
+    return FALSE;
   }
 
   static function error( $message ) {
