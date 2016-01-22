@@ -97,15 +97,15 @@ foreach ( $sites as $slug => $site ) {
 if ( file_exists( '.tmp.sql' ) )
   `rm .tmp.sql`;
 
+// Apply dev changes
+if ( file_exists( "config/dev.sql" ) && !file_exists( '/.db-installed' ) )
+  `mysql -u root < "config/dev.sql"`;
+
 // Create a lock file for databases
 `touch /.db-installed`;
 `chmod 744 save-db`;
 // Add the command
 `echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.zshrc`;
-
-// Apply dev changes
-if ( file_exists( "config/dev.sql" ) && !file_exists( '/.db-installed' ) )
-  `mysql -u root < "config/dev.sql"`;
 
 foreach ( $sites as $slug => $site ) {
   // Vagrant files should start with `defined( 'PROVISION' ) || die();`
