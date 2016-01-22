@@ -80,9 +80,9 @@ foreach ( $sites as $slug => $site ) {
     require_once 'setup/magento-admin-user.php';
     $dev_sql_created = true;
   }
-  if ( file_exists( "config/$slug/$slug.sql" ) ) {
+  if ( file_exists( "config/$slug.sql" ) ) {
     `echo 'SET foreign_key_checks=0;' > .tmp.sql`;
-    `cat "config/$slug/$slug.sql" >> .tmp.sql`;
+    `cat "config/$slug.sql" >> .tmp.sql`;
     echo "Importing database for $slug";
     `mysql -u root $slug < .tmp.sql`;
     if ( file_exists( "config/$slug/dev.sql" ) ) {
