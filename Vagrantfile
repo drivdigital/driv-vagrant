@@ -27,14 +27,5 @@ Vagrant.configure(2) do |config|
     sudo a2enmod rewrite
     sudo php /vagrant/setup/setup.php
   SHELL
+  config.vm.provision "shell", inline: "service apache2 restart", run: "always"
 end
-
-system("
-    if [ #{ARGV[0]} = 'up' ]; then
-        echo 'Running post setup scripts'
-        SCRIPT=setup/setup-host.php
-        [[ -f $SCRIPT ]] && php \"$SCRIPT\" --after
-        SCRIPT=../setup/setup-host.php
-        [[ -f $SCRIPT ]] && php \"$SCRIPT\" --after
-    fi
-")
