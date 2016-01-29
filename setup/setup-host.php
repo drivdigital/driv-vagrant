@@ -12,6 +12,25 @@ require_once 'setup/class-setup.php';
 
 $opts = getopt( '', ['after', 'before'] );
 
+if ( isset( $opts['before'] ) ) {
+  // Parse through the sites in the settings and clone any repo not existing
+  foreach ( $GLOBALS['settings']['sites'] as $site ) {
+    if (  '.dev' !== substr( @$site['name'], -4 ) ) {
+      // Is not a .dev, skip
+      continue;
+    }
+    if ( file_exists( $site['name'] ) ) {
+      // Folder exists already, skip
+      continue;
+    }
+    if ( @$site['git'] ) {
+      // Clone the git repo
+      `git clone "{$site['git']}" "{$site['name']}"`;
+    }
+  }
+}
+
+
 $sites = setup::get_sites();
 
 if ( isset( $opts['before'] ) ) {

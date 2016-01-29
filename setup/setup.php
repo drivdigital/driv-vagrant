@@ -7,12 +7,15 @@ define( 'PROVISION', TRUE );
 
 chdir( '/vagrant' );
 
+
 // Load utility class
 require_once 'setup/class-setup.php';
 
 // A temporary fix for to add wpcli to the box
 require_once 'setup/tmp-fix.php';
 
+// Load plugins
+// @TODO: glob( 'setup/plugins/*' );
 require_once 'setup/plugins/file-sync/setup.php';
 
 // Load the vhost template
@@ -121,7 +124,7 @@ foreach ( $sites as $slug => $site ) {
   }
 }
 
-// todo: should file sync be optional / argument?
+// @TODO each plugin :: setup();
 File_Sync::setup();
 
 // Restart apache

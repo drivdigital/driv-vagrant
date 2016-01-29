@@ -1,6 +1,23 @@
 <?php
 defined( 'PROVISION' ) || die();
 
+// Get settings
+
+$settings = [
+  'sites' => []
+];
+
+if ( file_exists( 'config/vagrant-config.json' ) ) {
+  $json = json_decode( file_get_contents( 'config/vagrant-config.json' ), TRUE );
+  foreach ( $json as $key => $value ) {
+    $settings[$key] = $value;
+  }
+}
+
+// Make settings a global
+$GLOBALS['settings'] = $settings;
+
+
 class setup {
   static function get_sites() {
     $sites = [];

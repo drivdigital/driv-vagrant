@@ -4,6 +4,11 @@ class File_Sync {
 
   static function setup() {
 
+    if ( !$GLOBALS['settings']['file-sync'] ) {
+      // Check if file sync has been enabled in the settings
+      return;
+    }
+
     $sync_dir = '/file-sync-sites';
 
     // Make node.js command available
@@ -37,3 +42,6 @@ class File_Sync {
     // Use `forever stop watch.js` in order to stop the watch process.
   }
 }
+
+
+$GLOBALS['settings']['file-sync'] = FALSE;
