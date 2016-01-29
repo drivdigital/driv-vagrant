@@ -3,19 +3,24 @@ defined( 'PROVISION' ) || die();
 
 // Get settings
 
-$settings = [
-  'sites' => []
+$GLOBALS['settings'] = [
+  'sites' => [],
 ];
+
+// Load plugins
+// @TODO: glob( 'setup/plugins/*' );
+require_once 'setup/plugins/file-sync/setup.php';
 
 if ( file_exists( 'config/vagrant-config.json' ) ) {
   $json = json_decode( file_get_contents( 'config/vagrant-config.json' ), TRUE );
   foreach ( $json as $key => $value ) {
-    $settings[$key] = $value;
+    $GLOBALS['settings'][$key] = $value;
   }
 }
 
 // Make settings a global
-$GLOBALS['settings'] = $settings;
+
+
 
 
 class setup {

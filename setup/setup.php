@@ -14,10 +14,6 @@ require_once 'setup/class-setup.php';
 // A temporary fix for to add wpcli to the box
 require_once 'setup/tmp-fix.php';
 
-// Load plugins
-// @TODO: glob( 'setup/plugins/*' );
-require_once 'setup/plugins/file-sync/setup.php';
-
 // Load the vhost template
 $vhost_template = file_get_contents( 'setup/vhost-template.conf' );
 
