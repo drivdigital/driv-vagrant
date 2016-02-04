@@ -16,6 +16,7 @@ Vagrant.configure(2) do |config|
   end
   config.vm.box = "driv"
   config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 443, host: 8081
   config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=774','fmode=775']
   config.vm.provision "fix-no-tty", type: "shell" do |s|
       s.privileged = false
