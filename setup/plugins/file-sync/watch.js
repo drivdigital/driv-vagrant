@@ -33,8 +33,8 @@ var watcher = chokidar.watch( SRC_DIR, {
     awaitWriteFinish: true,
     persistent:       true,
     usePolling:       true,
-    interval:         70,
-    binaryInterval:   250
+    interval:         500,
+    binaryInterval:   2500
 } );
 
 log( 'Started' );
