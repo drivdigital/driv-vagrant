@@ -17,3 +17,11 @@ if ( file_exists( 'wp-cli.phar' ) && !file_exists( '/usr/local/bin/wp' ) )
   `sudo ln -s /vagrant/wp-cli.phar /usr/local/bin/wp`;
 
 `cat setup/oh-my-zsh-hide-status.sh >> /home/vagrant/.zshrc`;
+
+
+// Mail log
+chmod( '/phpsendmail', 777 );
+mkdir( '/vagrant/mail/' );
+$contents = file_get_contents( '/phpsendmail' );
+$contents = str_replace( '/logs/mail/', '/vagrant/mail/', $contents );
+file_put_contents( '/phpsendmail', $contents );
