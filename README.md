@@ -2,7 +2,7 @@
 
 1. Create a customer folder (optional) `mkdir vagrant && cd vagrant`
 
-2. Clone Vagrant into this folder: `git clone https://github.com/drivdigital/driv-vagrant`
+2. Clone Vagrant into this folder: `git clone https://github.com/drivdigital/driv-vagrant .`
 
 3. Create a new subfolder for vagrant folder, this folder should have the same name as a dev URL (eg website.dev) `mkdir website.dev`
 

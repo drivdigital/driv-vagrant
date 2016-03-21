@@ -20,7 +20,14 @@ if ( file_exists( 'wp-cli.phar' ) && !file_exists( '/usr/local/bin/wp' ) )
 
 // Mail log
 chmod( '/phpsendmail', 777 );
-mkdir( '/vagrant/mail/' );
+if ( !file_exists( '/vagrant/mail' ) )
+  mkdir( '/vagrant/mail/' );
 $contents = file_get_contents( '/phpsendmail' );
 $contents = str_replace( '/logs/mail/', '/vagrant/mail/', $contents );
 file_put_contents( '/phpsendmail', $contents );
+
+// Edit zsh theme
+
+$contents = file_get_contents( '/home/vagrant/.oh-my-zsh/themes/robbyrussell.zsh-theme' );
+$contents = str_replace( '$(git_prompt_info)', 'VBOX', $contents );
+file_put_contents( '/home/vagrant/.oh-my-zsh/themes/robbyrussell.zsh-theme', $contents );
