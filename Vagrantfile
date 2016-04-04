@@ -28,6 +28,7 @@ Vagrant.configure(2) do |config|
     sudo a2enmod rewrite
     sudo php /vagrant/setup/setup.php
     sudo chmod -R 777 /var/log
+    sudo chmod 777 /phpsendmail
   SHELL
   config.vm.provision "shell", inline: "service apache2 restart", run: "always"
 end
