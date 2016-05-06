@@ -8,5 +8,4 @@
 .idea
 debug.log
 mail/*.html
-exist.dev/Vagrantfile.site
 Vagrantfile.project
