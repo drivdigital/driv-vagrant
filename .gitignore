@@ -1,5 +1,4 @@
 .vagrant
-/vagrant/*
 /database/*.sql
 .DS_Store
 /*.dev
@@ -9,3 +8,4 @@
 .idea
 debug.log
 mail/*.html
+exist.dev/Vagrantfile.site

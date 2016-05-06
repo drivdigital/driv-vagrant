@@ -34,10 +34,5 @@ Vagrant.configure(2) do |config|
 
 end
 
-# Load additional Vagrant file in the site directory
-site_dirs = Dir.glob("*.dev")
-
-site_dirs.each do |site_dir|
-  file = File.expand_path(site_dir + '/Vagrantfile.site')
-  load File.expand_path(file) if File.exists?(file)
-end
+# Load additional Vagrant project file
+load File.expand_path('Vagrantfile.project') if File.exists?('Vagrantfile.project')
