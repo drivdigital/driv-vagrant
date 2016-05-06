@@ -1,4 +1,5 @@
 .vagrant
+/vagrant/*
 /database/*.sql
 .DS_Store
 /*.dev

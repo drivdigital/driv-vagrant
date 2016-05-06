@@ -32,20 +32,9 @@ Vagrant.configure(2) do |config|
   SHELL
   config.vm.provision "shell", inline: "service apache2 restart", run: "always"
 
-  # Temporary code
-  # Bind 80/443 to 8080/8081 after booting/provisioning/reloading
-  # We should also check for a forward_port_80 config for the site
-  if Vagrant.has_plugin?("vagrant-triggers")
-    config.trigger.after [:provision, :up, :reload] do
-      system('echo "
-      rdr pass on lo0 inet proto tcp from any to 127.0.0.1 port 80 -> 127.0.0.1 port 8080
-      rdr pass on lo0 inet proto tcp from any to 127.0.0.1 port 443 -> 127.0.0.1 port 8081
-      " | sudo pfctl -f - > /dev/null 2>&1; echo "==> Fowarding Ports: 80 -> 8080, 443 -> 8081"')
-    end
+end
 
-    config.trigger.after [:halt, :destroy] do
-      system("sudo pfctl -f /etc/pf.conf > /dev/null 2>&1; echo '==> Removing Port Forwarding'")
-    end
-  end
-
+vagrantfiles = %w[vagrant/Vagrantfile.client]
+vagrantfiles.each do |vagrantfile|
+  load File.expand_path(vagrantfile) if File.exists?(vagrantfile)
 end
