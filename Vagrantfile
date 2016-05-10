@@ -34,5 +34,7 @@ Vagrant.configure(2) do |config|
 
 end
 
+
 # Load additional Vagrant project file
-load File.expand_path('Vagrantfile.project') if File.exists?('Vagrantfile.project')
+current_dir = File.dirname(File.expand_path(__FILE__))
+load File.expand_path("#{current_dir}/Vagrantfile.project") if File.exists?("#{current_dir}/Vagrantfile.project")
