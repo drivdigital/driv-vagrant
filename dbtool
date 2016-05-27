@@ -1,0 +1,110 @@
+#!/bin/bash
+
+function usage() {
+  echo "Usage: ./dbtool <command> [file]";
+  echo "";
+  echo "Commands:";
+  echo "  list            List all dev databases."
+  echo "  save [db]       Dumps [db] or all dev databases."
+  echo "  restore [db]    Restores [db] or all dev databases."
+  echo "  size            Display the size of all databases."
+  echo "  help            Show this help screen."
+}
+
+if [ $# -eq 0 ]; then
+    echo "Missing arguments"
+    usage
+    exit 1;
+fi
+
+command=$1
+db=$2
+db_files=/vagrant/config/*.sql
+
+function list() {
+  for file in ${db_files}
+  do
+    db_name=`cat ${file} | awk '/Database/{print $NF}'`
+    printf "  ${db_name} (${file})\n"
+  done
+}
+
+function run() {
+  text=${1}
+  sql=${2}
+
+  if [ "${db}" != "" ]; then
+    success_count=0
+    for file in ${db_files}
+    do
+      if [ -f ${file} ]; then
+        db_name=`cat ${file} | awk '/Database/{print $NF}'`
+        if [ ${db} = ${db_name} ]; then
+          printf "  %-15s %-0s\n" "${text} ${db_name}" "${file}"
+          sql_cmd=`printf "${sql}" ${db_name} ${file}`
+          eval ${sql_cmd}
+          let success_count=success_count+1
+        fi
+      fi
+    done
+    if [ ${success_count} -eq 0 ]; then
+      echo "Database not found, ${db}"
+    fi
+  else
+    success_count=0
+    for file in ${db_files}
+    do
+      if [ -f ${file} ]; then
+        db_name=`cat ${file} | awk '/Database/{print $NF}'`
+        if [ -n ${db_name} ]; then
+          printf "  %-15s %-0s\n" "${text} ${db_name}" "${file}"
+          sql_cmd=`printf "${sql}" ${db_name} ${file}`
+          eval ${sql_cmd}
+          let success_count=success_count+1
+        fi
+      fi
+    done
+    if [ ${success_count} -eq 0 ]; then
+      echo "No databases found, using ${db_files}"
+    fi
+  fi
+}
+
+function size() {
+  if [ "${db}" != "" ]; then
+    mysql -u root --execute "SELECT table_schema \"DB Name\", Round(Sum(data_length + index_length) / 1024 / 1024, 1) \"DB Size in MB\" FROM information_schema.tables WHERE table_schema in ('${db}') GROUP BY table_schema"
+  else
+    databases=""
+    for file in ${db_files}
+    do
+      if [ -f ${file} ]; then
+        db_name=`cat ${file} | awk '/Database/{print $NF}'`
+        if [ -n ${db_name} ]; then
+          databases+="'${db_name}',"
+        fi
+      fi
+    done
+    sql="SELECT table_schema \"DB Name\", Round(Sum(data_length + index_length) / 1024 / 1024, 1) \"DB Size in MB\" FROM information_schema.tables WHERE table_schema in (${databases::-1})  GROUP BY table_schema"
+    mysql -u root --execute "${sql}"
+  fi
+
+}
+
+case ${command} in
+  list)
+    list
+    ;;
+  save)
+    run "Saving" "mysqldump -u root %s > %s"
+    ;;
+  restore)
+    run "Restoring" "mysql -u root %s < %s"
+    #@todo: run dev
+    ;;
+  size)
+    size
+    ;;
+  *)
+    usage
+    ;;
+esac

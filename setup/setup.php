@@ -17,9 +17,6 @@ require_once 'setup/tmp-fix.php';
 // Load the vhost template
 $vhost_template = file_get_contents( 'setup/vhost-template.conf' );
 
-// Create a tool to save databases
-`echo "#!/bin/sh" > save-db`;
-
 $sites = setup::get_sites();
 
 foreach ( $sites as $slug => $site ) {
@@ -90,8 +87,6 @@ foreach ( $sites as $slug => $site ) {
       `mysql -u root < "config/$slug/dev.sql"`;
     }
   }
-  // Add the database to the saving tool
-  `echo "mysqldump -u root $slug > /vagrant/config/$slug.sql" >> save-db`;
 }
 // Remove temporary sql file
 if ( file_exists( '.tmp.sql' ) )
@@ -103,9 +98,9 @@ if ( file_exists( "config/dev.sql" ) && !file_exists( '/.db-installed' ) )
 
 // Create a lock file for databases
 `touch /.db-installed`;
-`chmod 744 save-db`;
+`chmod 744 dbtool`;
 // Add the command
-`echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.zshrc`;
+`echo "alias dbtool='/vagrant/dbtool'" >> /home/vagrant/.zshrc`;
 
 foreach ( $sites as $slug => $site ) {
   // Vagrant files should start with `defined( 'PROVISION' ) || die();`

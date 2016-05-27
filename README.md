@@ -19,7 +19,7 @@
 
 7. Install WordPress site as usual.
 
-8. At the end of the working day, save the database if you want to take care of this, the command: `vagrant ssh -c "cd /vagrant && ./save-db"`
+8. At the end of the working day, save the databases if you want to take care of this, the command: `vagrant ssh -c "cd /vagrant && ./dbtool save"`
 
 9. To stop the vagrant, use `vagrant halt`. If you don't stop it, the next time your use `vagrant up` you should provision with `vagrant up --provision` 
 
