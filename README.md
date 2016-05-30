@@ -21,9 +21,9 @@
 
 8. At the end of the working day, save the database if you want to take care of this, the command: `vagrant ssh -c "cd /vagrant && ./save-db"`
 
-9. To stop the vagrant, use `vagrant halt`. If you don't stop it, the next time your use `vagrant up` you should provision with `vagrant up --provision` 
+9. To stop the vagrant, use `vagrant halt`. If you don't stop it, the next time your use `vagrant up` you should provision with `vagrant up --provision`
 
-> **Note:** If using `wp-cli` to manage this wordpress install, you must do so by running `vagrant ssh`, `cd website.dev` then run `wp` commands 
+> **Note:** If using `wp-cli` to manage this wordpress install, you must do so by running `vagrant ssh`, `cd website.dev` then run `wp` commands
 
 ---------------------------------------------------------------------------------
 
@@ -67,6 +67,36 @@
 
 12. At the end of the working day, save the database if you want to take care of this, the command: `vagrant ssh -c "cd /vagrant && ./save-db"`
 
-13. To stop the vagrant, use `vagrant halt`. If you don't stop it, the next time your use `vagrant up` you should provision with `vagrant up --provision` 
+13. To stop the vagrant, use `vagrant halt`. If you don't stop it, the next time your use `vagrant up` you should provision with `vagrant up --provision`
 
-> **Note:** If using `wp-cli` to manage this wordpress install, you must do so by running `vagrant ssh`, `cd your folder.dev` then run `wp` commands 
+> **Note:** If using `wp-cli` to manage this wordpress install, you must do so by running `vagrant ssh`, `cd your folder.dev` then run `wp` commands
+
+---------------------------------------------------------------------------------
+
+## Databases
+
+When you start vagrant, it's going to import your database exactly how it is.
+Which 9/10 is wrong, because you're working locally and don't want to be redirected to the live site.
+
+So to combat this, put a file called `dev.sql` in your `config` folder, then edit it:
+
+If you're running **Wordpress**, replace the **prefix** and **Database name** and place this in the file:
+
+		USE website;
+		UPDATE wp_options SET option_value = 'http://website.dev:8080' WHERE option_name in ('home', 'siteurl');
+		UPDATE wp_users SET user_pass = MD5('vagrant');
+
+__Bonus round!__ Set all products in a woocommerce shop to active and give them a price:
+
+		update wp_postmeta set meta_value = 'instock' where meta_key = '_stock_status';
+		update wp_postmeta set meta_value = 19.99 where meta_key = '_price';
+		update wp_postmeta set meta_value = 19.99 where meta_key = '_regular_price';
+		update wp_posts set post_status   = 'publish' where post_type = 'product';
+
+...and for __Magento__, remember to change the same detial for URL and database name:
+
+		USE website;
+		UPDATE core_config_data SET value = "http://website.dev:8080/" where path like 'web/%secure/base_url';
+		UPDATE admin_user SET password    = MD5('vagrant');
+		UPDATE core_config_data SET value = '0' WHERE path = 'admin/security/use_form_key';
+		UPDATE core_config_data SET value = '0' WHERE path = 'google/analytics/active';
