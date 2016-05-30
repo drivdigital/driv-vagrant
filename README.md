@@ -100,3 +100,14 @@ __Bonus round!__ Set all products in a woocommerce shop to active and give them 
 		UPDATE admin_user SET password    = MD5('vagrant');
 		UPDATE core_config_data SET value = '0' WHERE path = 'admin/security/use_form_key';
 		UPDATE core_config_data SET value = '0' WHERE path = 'google/analytics/active';
+
+---
+
+## Aliases
+
+It's nice to have aliases
+
+- Start the project, regardless of if it's shutdown or halted: `alias vup='vagrant up --provision'`
+- Check if any other boxes are running: `alias vgs='vagrant global-status'`
+- Reimport the `dev.sql` into the database: `alias devdb='vagrant ssh -c "mysql -u root < /vagrant/config/dev.sql"'`
+- Save the current database to the config folder: `alias savedb='vagrant ssh -c "cd /vagrant && ./save-db"'`
