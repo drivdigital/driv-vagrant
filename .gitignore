@@ -6,5 +6,6 @@
 /wp-cli.phar
 /save-db
 .idea
+Vagrantfile.project
 debug.log
 mail/*.html
