@@ -80,7 +80,7 @@ class setup {
   }
 
   static function identify( $slug, $site ) {
-    if ( file_exists( "$site/wp-config-sample.php" ) || file_exists( "$site/wp-config.php" ) ) {
+    if ( file_exists( "$site/wp-config-sample.php" ) || file_exists( "$site/wp-content" ) ) {
       echo "WordPress identified";
       return 'wordpress';
     }
