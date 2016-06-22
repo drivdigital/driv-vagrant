@@ -111,9 +111,10 @@ foreach ( $sites as $slug => $site ) {
     `cat "config/$slug.sql" >> .tmp.sql`;
     echo "Importing database for $slug";
     `mysql -u root $slug < .tmp.sql`;
-    if ( file_exists( "config/$slug/dev.sql" ) ) {
+    $dev_sql = setup::get_path( 'dev.sql', $slug, $site );
+    if ( $dev_sql ) {
       echo "Running dev.sql for '$slug'.\n";
-      `mysql -u root < "config/$slug/dev.sql"`;
+      `mysql -u root < "$dev_sql"`;
     }
   }
   // Add the database to the saving tool
