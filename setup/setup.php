@@ -32,6 +32,25 @@ foreach ( $sites as $slug => $site ) {
     mkdir( "config/$slug" );
   }
 
+  $base_path = setup::get_path( '', $slug, $site );
+
+  // Create config.json if it doesn't exist yet
+  $config_json = setup::get_path( 'config.json', $slug, $site );
+  if ( ! $config_json ) {
+    // Json file has not been created
+    // Get the clone url
+    $git_url = `cd /vagrant/$site/ && git config --get remote.origin.url`;
+    if ( $git_url ) {
+      $settings = [
+        'package' => '', // @TODO: Find the package name
+        'name' => $site,
+        'git'  => trim( $git_url ),
+      ];
+      $config_json = "$base_path/config.json";
+      file_put_contents( $config_json, json_encode( $settings ) );
+    }
+  }
+
   // Run update and setup a few utiliy variables
   setup::update( $slug, $site );
   $system = setup::identify( $slug, $site );
@@ -51,7 +70,7 @@ foreach ( $sites as $slug => $site ) {
     }
     // Insert an existing config file if found
     if ( ! file_exists( "$site/$config_file" ) && setup::check_path( $base_config, $slug, $site ) ) {
-      $base_config_file = setup::get_path( "$base_config", $slug, $site );
+      $base_config_file = setup::get_path( $base_config, $slug, $site );
       `cp "$base_config_file" "$site/$config_file"`;
     }
   }
@@ -65,7 +84,7 @@ foreach ( $sites as $slug => $site ) {
   $vhost_file = setup::get_path( "$slug.dev.conf", $slug, $site );
   if ( ! $vhost_file ) {
     $site_vhost = str_replace( '%SITE', $site, $vhost_template );
-    $vhost_file = setup::get_path( '', $slug, $site ) ."/$slug.dev.conf";
+    $vhost_file = $base_path ."/$slug.dev.conf";
     file_put_contents( $vhost_file, $site_vhost );
   }
   // Link the vhost conf to apache2

@@ -12,25 +12,33 @@ $GLOBALS['settings'] = [
 require_once 'setup/plugins/file-sync/setup.php';
 
 if ( file_exists( 'config/vagrant-config.json' ) ) {
-  $json = json_decode( file_get_contents( 'config/vagrant-config.json' ), TRUE );
+  $json = json_decode( file_get_contents( 'config/vagrant-config.json' ), true );
   foreach ( $json as $key => $value ) {
     $GLOBALS['settings'][$key] = $value;
   }
 }
+$sites = setup::get_sites();
+foreach ( $sites as $slug => $site ) {
+  $base_path = setup::get_path( '', $slug, $site );
+  $config_json = setup::get_path( 'config.json', $slug, $site );
+  if ( ! $base_path ) {
+    continue;
+  }
+  if ( $config_json ) {
+    $GLOBALS['settings']['sites'][] = json_decode( file_get_contents( $config_json ), true );
+  }
+}
 
 // Make settings a global
-
-
-
-
 class setup {
   static function get_sites() {
     $sites = [];
     $dirs = glob( '*.dev' );
     foreach ( $dirs as $dir ) {
       // Skip non-dirs
-      if ( !is_dir( $dir ) )
+      if ( ! is_dir( $dir ) ) {
         continue;
+      }
       // Get the site name
       $site = basename( $dir );
       if ( preg_match( '/\s/', $site ) ) {
@@ -45,8 +53,6 @@ class setup {
       $sites[$slug] = $site;
     }
     return $sites;
-
-
   }
   static function update( $slug, $site ) {
     // Restructured the config system
