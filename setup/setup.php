@@ -57,21 +57,21 @@ foreach ( $sites as $slug => $site ) {
   $db_prefix = setup::db_prefix( $slug, $site, $system );
 
   // Config files
-  $config_file = setup::get_config_file( $system );
-  if ( $config_file ) {
-    $base_config = basename( $config_file );
+  $config_path = setup::get_config_file( $system );
+  if ( $config_path ) {
+    $config_file = basename( $config_path );
     // Make a copy of the config file
-    $base_config_file = setup::get_path( "$base_config", $slug, $site );
+    $base_config_file = setup::get_path( "$config_file", $slug, $site );
     if ( ! $base_config_file ) {
-      $base_config_file = "config/$slug/$base_config";
+      $base_config_file = "$base_path/$config_file";
     }
-    if ( file_exists( "$site/$config_file" ) ) {
+    if ( file_exists( "$site/$config_path" ) ) {
       `cp "$site/$config_file" "$base_config_file"`;
     }
     // Insert an existing config file if found
-    if ( ! file_exists( "$site/$config_file" ) && setup::check_path( $base_config, $slug, $site ) ) {
-      $base_config_file = setup::get_path( $base_config, $slug, $site );
-      `cp "$base_config_file" "$site/$config_file"`;
+    if ( ! file_exists( "$site/$config_path" ) && setup::check_path( $config_file, $slug, $site ) ) {
+      $base_config_file = setup::get_path( $config_file, $slug, $site );
+      `cp "$base_config_file" "$site/$config_path"`;
     }
   }
 

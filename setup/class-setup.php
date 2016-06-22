@@ -99,10 +99,12 @@ class setup {
         echo "Config file already exists";
         return;
       }
+      // Not implemented yet. Bail early
+      return;
       $contents = file_get_contents( $sample );
-      $contents = strtr( [
+      $contents = strtr( $contents, [
         // @TODO:
-        '' => ''
+        '' => '',
       ] );
       file_put_contents( $config, $contents );
       echo "Creating a config file for $system";
