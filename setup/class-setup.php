@@ -180,4 +180,25 @@ class setup {
     echo "\n";
     echo "\x1b[0m";
   }
+
+  static function check_path( $path, $slug, $site ) {
+    return (boolean) self::get_path( $path, $slug, $site );
+  }
+
+  static function get_path( $path, $slug, $site ) {
+    $best_path = "$site/vagrant-config/$path";
+    echo "Lookgin for: $best_path\n";
+    if ( file_exists( "$best_path" ) ) {
+      echo "Found: $best_path\n";
+      return "$best_path";
+    }
+    $best_path = "config/$slug/$path";
+    echo "Looking for: $best_path\n";
+    if ( file_exists( $best_path ) ) {
+      echo "Found: $best_path\n";
+      return $best_path;
+    }
+    echo "Missing: $best_path\n";
+    return false;
+  }
 }
