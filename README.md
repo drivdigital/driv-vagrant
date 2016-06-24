@@ -1,8 +1,10 @@
+**Note for winodws users:** This project has been created for use on osx and linux systems. It should still work on a windows system, but might require adjustments to make it work.
+
 ## How to create new WordPress project using Vagrant
 
-1. Create a customer folder (optional) `mkdir vagrant && cd vagrant`
+1. Create a customer folder (optional) `mkdir vagrant && cd vagrant` (Replace vagrant with the name of the customer. eg `mkdir DrivDigital && cd DrivDigital` )
 
-2. Clone Vagrant into this folder: `git clone https://github.com/drivdigital/driv-vagrant .`
+2. Clone this repo into that folder: `git clone https://github.com/drivdigital/driv-vagrant .`
 
 3. Create a new subfolder for vagrant folder, this folder should have the same name as a dev URL (eg website.dev) `mkdir website.dev`
 
@@ -30,11 +32,10 @@
 
 ## How to create a WordPress project from an existing project using Vagrant
 
-1. Create a customer folder (optional) `mkdir vagrant && cd vagrant`
+1. Clone this repo and name it after the customer or project `git clone https://github.com/drivdigital/driv-vagrant drivdigital`.
+2. CD into the project `cd drivdigital`
 
-2. Clone Vagrant into this folder: `git clone https://github.com/drivdigital/driv-vagrant`
-
-3. Clone into the Vagrant folder, remember to rename the folder to the same name as a dev URL (eg website.dev)
+3. Clone the project as "projectname.dev" into the customer directory `git clone git@github.com:path/to/project.git projectname.dev`. Replace projectname with the name of your project. It's important to not use dashes and the directory must end in ".dev".
 
 4. Get `wp-config.php` and put it in the root of newly created customer folder or create new.
 
@@ -73,7 +74,11 @@
 
 ---------------------------------------------------------------------------------
 
-## Databases
+## Database and config files
+
+A config folder will be created in the root of this project. Each `projectname.dev` folders found in the root will be given its own folder within the config directory which contains the apache.conf file and the database along with an optional provision.php for customisation during provisioning. To include these config files in each project repo you can move the projects config dir into the project itself and name it vagrant-config. `mv config/projectname projectname.dev/vagrant-config`.
+
+To import an existing database it should be given the same name as the project and placed in the config dir. Eg `config/projectname.sql`.
 
 When you start vagrant, it's going to import your database exactly how it is.
 Which 9/10 is wrong, because you're working locally and don't want to be redirected to the live site.
