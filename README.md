@@ -1,4 +1,4 @@
-** Note for winodws users: ** This project has been created for use on osx and linux systems. It should still work on a windows system, but might require adjustments to make it work.
+**Note for winodws users:** This project has been created for use on osx and linux systems. It should still work on a windows system, but might require adjustments to make it work.
 
 ## How to create new WordPress project using Vagrant
 
