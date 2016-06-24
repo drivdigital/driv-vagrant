@@ -74,7 +74,11 @@
 
 ---------------------------------------------------------------------------------
 
-## Databases
+## Database and config files
+
+A config folder will be created in the root of this project. Each `projectname.dev` folders found in the root will be given its own folder within the config directory which contains the apache.conf file and the database along with an optional provision.php for customisation during provisioning. To include these config files in each project repo you can move the projects config dir into the project itself and name it vagrant-config. `mv config/projectname projectname.dev/vagrant-config`.
+
+To import an existing database it should be given the same name as the project and placed in the config dir. Eg `config/projectname.sql`.
 
 When you start vagrant, it's going to import your database exactly how it is.
 Which 9/10 is wrong, because you're working locally and don't want to be redirected to the live site.
