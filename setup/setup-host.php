@@ -42,7 +42,7 @@ if ( isset( $opts['before'] ) ) {
     if ( FALSE !== strpos( $hosts, $site ) )
       continue;
 
-    $hosts .= "\n127.0.0.1\t$site";
+    $hosts .= "\n192.168.33.10\t$site";
     $save = true;
   }
   if ( $save ) {
