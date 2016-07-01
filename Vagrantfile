@@ -26,6 +26,7 @@ Vagrant.configure(2) do |config|
     usermod -a -G vagrant www-data
     sudo php5enmod mcrypt
     sudo a2enmod rewrite
+    sudo a2enmod headers
     sudo php /vagrant/setup/setup.php
   SHELL
   config.vm.provision "shell", inline: "service apache2 restart", run: "always"
