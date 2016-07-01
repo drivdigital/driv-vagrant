@@ -6,3 +6,5 @@
 /wp-cli.phar
 /save-db
 .idea
+debug.log
+mail/*.html

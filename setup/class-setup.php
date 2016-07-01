@@ -12,25 +12,33 @@ $GLOBALS['settings'] = [
 require_once 'setup/plugins/file-sync/setup.php';
 
 if ( file_exists( 'config/vagrant-config.json' ) ) {
-  $json = json_decode( file_get_contents( 'config/vagrant-config.json' ), TRUE );
+  $json = json_decode( file_get_contents( 'config/vagrant-config.json' ), true );
   foreach ( $json as $key => $value ) {
     $GLOBALS['settings'][$key] = $value;
   }
 }
+$sites = setup::get_sites();
+foreach ( $sites as $slug => $site ) {
+  $base_path = setup::get_path( '', $slug, $site );
+  $config_json = setup::get_path( 'config.json', $slug, $site );
+  if ( ! $base_path ) {
+    continue;
+  }
+  if ( $config_json ) {
+    $GLOBALS['settings']['sites'][] = json_decode( file_get_contents( $config_json ), true );
+  }
+}
 
 // Make settings a global
-
-
-
-
 class setup {
   static function get_sites() {
     $sites = [];
     $dirs = glob( '*.dev' );
     foreach ( $dirs as $dir ) {
       // Skip non-dirs
-      if ( !is_dir( $dir ) )
+      if ( ! is_dir( $dir ) ) {
         continue;
+      }
       // Get the site name
       $site = basename( $dir );
       if ( preg_match( '/\s/', $site ) ) {
@@ -45,8 +53,6 @@ class setup {
       $sites[$slug] = $site;
     }
     return $sites;
-
-
   }
   static function update( $slug, $site ) {
     // Restructured the config system
@@ -74,7 +80,7 @@ class setup {
   }
 
   static function identify( $slug, $site ) {
-    if ( file_exists( "$site/wp-config-sample.php" ) ) {
+    if ( file_exists( "$site/wp-config-sample.php" ) || file_exists( "$site/wp-content" ) ) {
       echo "WordPress identified";
       return 'wordpress';
     }
@@ -93,10 +99,12 @@ class setup {
         echo "Config file already exists";
         return;
       }
+      // Not implemented yet. Bail early
+      return;
       $contents = file_get_contents( $sample );
-      $contents = strtr( [
+      $contents = strtr( $contents, [
         // @TODO:
-        '' => ''
+        '' => '',
       ] );
       file_put_contents( $config, $contents );
       echo "Creating a config file for $system";
@@ -179,5 +187,21 @@ class setup {
       echo "=";
     echo "\n";
     echo "\x1b[0m";
+  }
+
+  static function check_path( $path, $slug, $site ) {
+    return (boolean) self::get_path( $path, $slug, $site );
+  }
+
+  static function get_path( $path, $slug, $site ) {
+    $best_path = "$site/vagrant-config/$path";
+    if ( file_exists( "$best_path" ) ) {
+      return "$best_path";
+    }
+    $best_path = "config/$slug/$path";
+    if ( file_exists( $best_path ) ) {
+      return $best_path;
+    }
+    return false;
   }
 }
