@@ -7,4 +7,5 @@
 /save-db
 .idea
 debug.log
-/mail
+/mail/*.html
+
