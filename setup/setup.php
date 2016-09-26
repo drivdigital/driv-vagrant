@@ -150,8 +150,10 @@ foreach ( $sites as $slug => $site ) {
   }
 }
 
-// @TODO each plugin :: setup();
-File_Sync::setup();
+if ( ! empty( $GLOBALS['settings']['sites'] ) ) {
+  require_once( __DIR__ . '/../provisioners/Provisioner.php' );
+  DrivDigital\Vagrant\Provisioners\Provisioner::install( $GLOBALS['settings']['sites'] );
+}
 
 // Restart apache
 `service apache2 restart`;

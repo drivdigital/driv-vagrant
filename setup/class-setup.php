@@ -7,10 +7,6 @@ $GLOBALS['settings'] = [
   'sites' => [],
 ];
 
-// Load plugins
-// @TODO: glob( 'setup/plugins/*' );
-require_once 'setup/plugins/file-sync/setup.php';
-
 if ( file_exists( 'config/vagrant-config.json' ) ) {
   $json = json_decode( file_get_contents( 'config/vagrant-config.json' ), true );
   foreach ( $json as $key => $value ) {
