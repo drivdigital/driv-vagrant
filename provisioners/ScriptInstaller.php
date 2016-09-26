@@ -19,11 +19,11 @@ class ScriptInstaller {
   protected $siteSetting;
 
   /**
-   * Array of scripts that a provisioner script depends on
+   * Array of scripts that a provisioner includes
    *
    * @var array
    */
-  protected $dependsOn = [];
+  protected $includes = [];
 
   /**
    * Path to the current script
@@ -134,7 +134,6 @@ class ScriptInstaller {
         continue;
       }
 
-
       if ( method_exists( $installer, 'runBefore' ) ) {
         $installer->runBefore();
       }
@@ -142,8 +141,8 @@ class ScriptInstaller {
       self::$instantiatedClasses[] = $class;
 
       // Install any dependencies first.
-      if ( $installer->dependsOn && ! empty( $installer->dependsOn ) ) {
-        foreach ( $installer->dependsOn as $scriptDependency ) {
+      if ( $installer->includes && ! empty( $installer->includes ) ) {
+        foreach ( $installer->includes as $scriptDependency ) {
           $this->install( $scriptDependency );
         }
       }
@@ -155,9 +154,8 @@ class ScriptInstaller {
       if ( method_exists( $installer, 'runAfter' ) ) {
         $installer->runAfter();
       }
-      $this->log( ' ' );
 
-//      $this->log(str_repeat('.',80));
+      $this->log( ' ' );
     }
   }
 

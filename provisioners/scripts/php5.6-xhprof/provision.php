@@ -3,7 +3,7 @@ use DrivDigital\Vagrant\Provisioners\ScriptInstaller;
 
 class InstallXhprof extends ScriptInstaller {
 
-  protected $dependsOn = [
+  protected $include = [
       'php-pear',
       'php5.6-dev',
       'php-composer',

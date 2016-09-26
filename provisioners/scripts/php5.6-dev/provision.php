@@ -3,20 +3,20 @@ use DrivDigital\Vagrant\Provisioners\ScriptInstaller;
 
 class InstallPhp56Dev extends ScriptInstaller {
 
-  public $dependsOn = [
-      'libapache2-mod-php5.6',
-      'php5.6-common',
-      'php5.6-gd',
-      'php5.6-mysql',
-      'php5.6-mcrypt',
-      'php5.6-curl',
-      'php5.6-intl',
-      'php5.6-xsl',
-      'php5.6-mbstring',
-      'php5.6-zip',
-      'php5.6-bcmath',
-      'php5.6-iconv',
-      'php5.6-xml'
+  public $include = [
+      'php5.6-dev/libapache2-mod-php5.6',
+      'php5.6-dev/common',
+      'php5.6-dev/gd',
+      'php5.6-dev/mysql',
+      'php5.6-dev/mcrypt',
+      'php5.6-dev/curl',
+      'php5.6-dev/intl',
+      'php5.6-dev/xsl',
+      'php5.6-dev/mbstring',
+      'php5.6-dev/zip',
+      'php5.6-dev/bcmath',
+      'php5.6-dev/iconv',
+      'php5.6-dev/xml'
   ];
 
   public function runBefore() {
