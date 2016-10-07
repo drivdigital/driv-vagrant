@@ -11,9 +11,6 @@ chdir( '/vagrant' );
 // Load utility class
 require_once 'setup/class-setup.php';
 
-// A temporary fix for to add wpcli to the box
-require_once 'setup/tmp-fix.php';
-
 // Load the vhost template
 $vhost_template = file_get_contents( 'setup/vhost-template.conf' );
 
@@ -134,6 +131,7 @@ if ( file_exists( 'config/dev.sql' ) && ! file_exists( '/.db-installed' ) ) {
 `touch /.db-installed`;
 `chmod 744 save-db`;
 // Add the command
+// @todo: check if already added.
 `echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.zshrc`;
 
 foreach ( $sites as $slug => $site ) {
@@ -150,8 +148,10 @@ foreach ( $sites as $slug => $site ) {
   }
 }
 
-// @TODO each plugin :: setup();
-File_Sync::setup();
+if ( ! empty( $GLOBALS['settings']['sites'] ) ) {
+  require_once( __DIR__ . '/provisioners/Installer.php' );
+  DrivDigital\Vagrant\Provisioners\Installer::install( $GLOBALS['settings']['sites'] );
+}
 
 // Restart apache
 `service apache2 restart`;
