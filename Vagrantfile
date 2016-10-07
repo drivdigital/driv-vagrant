@@ -47,9 +47,6 @@ Vagrant.configure(2) do |config|
       s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
   end
 
-  # Setup PHP
-  config.vm.provision "shell", privileged: false, run: "always", inline: "php /vagrant/setup/class-setup-php.php provision"
-
   # Setup
   config.vm.provision "shell", inline: <<-SHELL
     usermod -a -G vagrant www-data
@@ -57,6 +54,9 @@ Vagrant.configure(2) do |config|
     sudo chmod -R 777 /var/log
     sudo chmod 777 /phpsendmail
   SHELL
+
+  # Setup PHP
+  config.vm.provision "shell", privileged: false, run: "always", inline: "php /vagrant/setup/class-setup-php.php provision"
 
   # Start Mailcatcher
   config.vm.provision "shell", privileged: false, run: "always", inline: <<-SHELL
