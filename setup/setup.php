@@ -133,6 +133,7 @@ if ( file_exists( 'config/dev.sql' ) && ! file_exists( '/.db-installed' ) ) {
 // Add the command
 // @todo: check if already added.
 `echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.zshrc`;
+`echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.bashrc`;
 
 foreach ( $sites as $slug => $site ) {
   // Vagrant files should start with `defined( 'PROVISION' ) || die();`
