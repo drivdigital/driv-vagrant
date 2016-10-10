@@ -20,6 +20,7 @@ Vagrant.configure(2) do |config|
     v.memory = 2048
   end
   config.vm.box = "driv02"
+  config.vm.box_url = "http://drivdi-2200.rask17.raskesider.no/vagrant/driv02.box"
 
 
   ##############################################################################
