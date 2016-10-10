@@ -71,7 +71,9 @@ class setup {
     }, glob( __DIR__ . '/vhosts/*.dev.conf' ) );
   }
 
-
+  static function is_private_network() {
+    return strpos( shell_exec( '/sbin/ifconfig' ), 'inet addr:192.168.33.10' ) !== false;
+  }
 
   static function update( $slug, $site ) {
     // Restructured the config system

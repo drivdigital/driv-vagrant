@@ -97,7 +97,7 @@ foreach ( $sites as $slug => $site ) {
     continue;
   }
 
-  echo "Seting up database, '$slug'.\n";
+  echo "Seting up database, '$slug'\n";
   `mysql -u root -e "CREATE DATABASE IF NOT EXISTS $slug"`;
   echo "Checking dev.sql $system";
   $dev_sql_created = false;
@@ -180,8 +180,15 @@ if ( ! empty( $GLOBALS['settings']['sites'] ) ) {
 `service apache2 restart`;
 
 // Success
-echo "Success, your sites are now available at the following urls:\n";
+echo "\nTools available at:\n";
+foreach ( setup::get_built_in_sites() as $built_in ) {
+  $port = !setup::is_private_network() ? ':8080':'';
+  $host = $built_in['host_name'];
+  echo "http://$host$port\n";
+}
 
+echo "\nSuccess, your sites are now available at the following urls:\n";
 foreach ( $sites as $site ) {
-  echo "http://$site:8080/\n";
+  $port = !setup::is_private_network() ? ':8080':'';
+  echo "http://$site$port\n";
 }
