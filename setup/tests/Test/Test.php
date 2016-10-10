@@ -17,6 +17,7 @@ abstract class Test {
    * Assert
    * @param bool $expression
    * @param string $description
+   * @param array $comments
    */
   public function assert( $expression, $description, $comments = [] ) {
     if ( $expression ) {

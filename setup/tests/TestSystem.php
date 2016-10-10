@@ -53,14 +53,12 @@ class TestSystem extends Test {
     $enabledVhosts       = Vagrant::getEnabledApacheVhosts();
     $this->assert( in_array( 'Vagrant', $enabledVhosts ), 'Default ServerName Vagrant should be in enabled vhosts' );
 
-    $this->assert( strpos( shell_exec( 'curl -I -s vagrant.dev' ), 'HTTP/1.1 200 OK' ) !== false, 'vagrant.dev should be running' );
+    $this->assert( strpos( shell_exec( 'curl -I -s box.dev' ), 'HTTP/1.1 200 OK' ) !== false, 'box.dev should be running' );
     $this->assert( strpos( shell_exec( 'curl -I -s phpmyadmin.dev' ), 'HTTP/1.1 200 OK' ) !== false, 'phpmyadmin.dev should be running' );
     $this->assert( strpos( shell_exec( 'curl -I -s logs.dev' ), 'HTTP/1.1 200 OK' ) !== false, 'logs.dev should be running' );
     $this->assert( strpos( shell_exec( 'curl -I -s profiler.dev' ), 'HTTP/1.1 200 OK' ) !== false, 'logs.dev should be running' );
     $this->assert( strpos( shell_exec( 'curl -I -s mail.dev' ), 'HTTP/1.1 200 OK' ) !== false, 'mail.dev should be running' );
 
-    $this->assert( in_array( 'profiler.dev', $enabledVhosts ), 'profiler.dev should be in enabled vhosts' );
-    $this->assert( in_array( 'vagrant.dev', $enabledVhosts ), 'vagrant.dev should be in enabled vhosts' );
     $this->assert( in_array( 'proxy_module', $loadedApacheModules ), 'Apache proxy_module should have loaded' );
     $this->assert( in_array( 'proxy_http_module', $loadedApacheModules ), 'Apache proxy_http_module should have loaded' );
     $this->assert( in_array( 'proxy_wstunnel_module', $loadedApacheModules ), 'Apache proxy_wstunnel_module should have loaded' );

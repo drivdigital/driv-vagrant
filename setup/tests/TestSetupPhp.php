@@ -3,12 +3,16 @@
 class TestSetupPhp extends Test {
 
   public function run() {
+
+    $userIni = __DIR__ .'/user.ini';
+    $sampleIni = __DIR__ .'/fixtures/sample.ini';
+
     require_once '../class-setup-php.php';
-    $setup_php = new Setup_Php( 'user.ini', [ 'fixtures/sample.ini' ] );
+    $setup_php = new Setup_Php( $userIni, [ $sampleIni ] );
     $setup_php->update_ini_settings();
 
-    $this->assert( file_exists( 'user.ini' ), 'user.ini should be created' );
-    $user_ini_parsed = parse_ini_file( 'user.ini', true );
+    $this->assert( file_exists( $userIni ), 'user.ini should be created' );
+    $user_ini_parsed = parse_ini_file( $userIni, true );
     $this->assert( $user_ini_parsed['box']['version'] == 7, 'user.ini should have the expected php version setting' );
 
     $parsed = parse_ini_file( 'fixtures/sample.ini' );
@@ -22,8 +26,8 @@ class TestSetupPhp extends Test {
     $this->assert( $parsed['tideways.auto_prepend_library'] == 0, 'tideways.auto_prepend_library should be added and and have the expected value' );
 
     // Clean up.
-    unlink( 'user.ini' );
-    copy( 'fixtures/sample.ini.bak', 'fixtures/sample.ini' );
+    unlink( $userIni );
+    copy( "$sampleIni.bak", "$sampleIni" );
 
   }
 }
