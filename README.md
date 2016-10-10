@@ -8,7 +8,7 @@ This will download and add the box.
 
 Manual install:
 
-`vagrant box add driv02 @todo:URL`
+`vagrant box add driv02 http://drivdi-2200.rask17.raskesider.no/vagrant/driv02.box`
 
 ## Daily usage
 
@@ -21,7 +21,6 @@ SSH:
 Destroy:
 
 `vagrant destroy -f`
-
 
 The default VM enables port forwarding and .dev sites can be accessed using port 8080 or 8081(SSL)
 When running `vm2`, the VM will enable a private network and .dev site URLs does not require port number.
