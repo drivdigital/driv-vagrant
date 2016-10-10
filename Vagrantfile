@@ -12,12 +12,12 @@ system("
 ")
 
 Vagrant.configure(2) do |config|
-  config.ssh.username = 'vagrant'
-  config.ssh.password = 'vagrant'
 
   ##############################################################################
   ## Shared                                                                   ##
   ##############################################################################
+  config.ssh.username = 'vagrant'
+  config.ssh.password = 'vagrant'
   config.vm.provider "virtualbox" do |v|
     v.memory = 2048
   end
