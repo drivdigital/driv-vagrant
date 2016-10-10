@@ -11,6 +11,18 @@ sudo bash -c 'echo > /var/log/php-errors.log'
 sudo rm -f /.db-installed
 mongo tideways --eval "db.dropDatabase()"
 
+sudo a2dissite box.dev
+sudo a2dissite logs.dev
+sudo a2dissite mail.dev
+sudo a2dissite phpmyadmin.dev
+sudo a2dissite profiler.dev
+
+rm /etc/apache2/sites-available/box.dev.conf
+rm /etc/apache2/sites-available/logs.dev.conf
+rm /etc/apache2/sites-available/mail.dev.conf
+rm /etc/apache2/sites-available/phpmyadmin.dev.conf
+rm /etc/apache2/sites-available/profiler.dev.conf
+
 # Check that the current PHP version is 7
 php_version_first_line=$(php -v | head -n 1)
 php_version=$(echo ${php_version_first_line} | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')

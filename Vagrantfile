@@ -12,6 +12,8 @@ system("
 ")
 
 Vagrant.configure(2) do |config|
+  config.ssh.username = 'vagrant'
+  config.ssh.password = 'vagrant'
 
   ##############################################################################
   ## Shared                                                                   ##
