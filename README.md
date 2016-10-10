@@ -31,4 +31,4 @@ When running a Vagrant private network you may have to shut down any HTTP server
 
 ## Documentation 
 
-See the [wiki]([https://github.com/drivdigital/driv-vagrant/wiki]) for documentation.
+See the [wiki](https://github.com/drivdigital/driv-vagrant/wiki) for documentation.
