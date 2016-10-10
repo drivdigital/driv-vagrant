@@ -51,6 +51,28 @@ class setup {
     return $sites;
   }
 
+  static function get_all_sites() {
+    $dev_sites = self::get_sites();
+    $built_in_sites = self::get_built_in_sites();
+    $result = $dev_sites;
+    foreach ($built_in_sites as $built_in) {
+      $result[$built_in['slug']] = $built_in['host_name'];
+    }
+    return $result;
+  }
+
+  static function get_built_in_sites() {
+    return array_map( function ( $vhost ) {
+      return [
+          'host_name' => explode( '.conf', basename( $vhost ) )[0],
+          'slug'      => explode( '.dev.conf', basename( $vhost ) )[0],
+          'path'      => $vhost
+      ];
+    }, glob( __DIR__ . '/vhosts/*.dev.conf' ) );
+  }
+
+
+
   static function update( $slug, $site ) {
     // Restructured the config system
     if ( file_exists( "setup/$site.conf" ) ) {
@@ -75,15 +97,6 @@ class setup {
       return 'app/etc/local.xml';
     }
     return FALSE;
-  }
-
-  static function get_built_in_sites() {
-    return array_map( function ( $vhost ) {
-      return [
-          'host_name' => explode( '.conf', basename( $vhost ) )[0],
-          'path'      => $vhost
-      ];
-    }, glob( __DIR__ . '/vhosts/*.dev.conf' ) );
   }
 
   static function identify( $slug, $site ) {

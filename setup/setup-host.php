@@ -31,13 +31,12 @@ if ( isset( $opts['before'] ) ) {
 }
 
 
-$sites = setup::get_sites();
+$sites = setup::get_all_sites();
 
 if ( isset( $opts['before'] ) ) {
   $hosts = trim( file_get_contents( '/etc/hosts' ) );
   $save = false;
 
-  // pre installed.
   foreach ( $sites as $slug => $site ) {
     // For 80 -> 8080 port forwarding.
     if ( ! preg_match_all("/127\.0\.0\.1\s+$site/", $hosts) ) {
@@ -59,23 +58,6 @@ if ( isset( $opts['before'] ) ) {
     else {
       setup::error( "Error: '/etc/hosts' is not writeable. Make sure this line is in your hosts file:\n127.0.0.1\t". implode( ' ', $sites ) );
     }
-  }
-
-  $save = false;
-  foreach ( setup::get_built_in_sites() as $built_in ) {
-    $host_name = $built_in['host_name'];
-    if ( ! preg_match_all( "/127\.0\.0\.1\s+$host_name/", $hosts ) ) {
-      $hosts .= "\n127.0.0.1\t$host_name";
-      $save = true;
-    }
-    if ( ! preg_match_all( "/192\.168\.33\.10\s+$host_name/", $hosts ) ) {
-      $hosts .= "\n192.168.33.10\t$host_name";
-      $save = true;
-    }
-
-  }
-  if ( $save ) {
-    file_put_contents( '/etc/hosts', $hosts );
   }
 
 }
