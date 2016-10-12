@@ -2,32 +2,38 @@
 
 ## Installing
 
+Before starting up, you need to verify that the following software are installed:
+
+* Git
+* Virtual Box
+* Vagrant
+
+Download, add the box and configure: 
+
 `vagrant up`
 
-This will download and add the box. 
-
-Manual install:
-
-`vagrant box add driv02 http://drivdi-2200.rask17.raskesider.no/vagrant/driv02.box`
+The first time you run `vagrant up` Vagrant will download and add the box.
 
 ## Daily usage
 
-Start:
+Start:  
+
 `vagrant up [vm2]`
 
-SSH:
+SSH:  
+
 `vagrant ssh [vm2]`
 
-Destroy:
+Destroy:  
 
 `vagrant destroy -f`
 
-The default VM enables port forwarding and .dev sites can be accessed using port 8080 or 8081(SSL)
-When running `vm2`, the VM will enable a private network and .dev site URLs does not require port number.
+The default VM enables [port forwarding](https://www.vagrantup.com/docs/networking/forwarded_ports.html) and .dev sites can be accessed using port 8080 or 8081(SSL)
+When running `vm2`, the VM enables a [private network ](https://www.vagrantup.com/docs/networking/private_network.html) and .dev site URLs does not require a port number.
 
 NOTE!
-When running a Vagrant private network you may have to shut down any HTTP server running on port 80.
+When running a private network (vm2) you may have to shut down any HTTP server running on port 80.
 
 ## Documentation 
 
-See the [wiki](https://github.com/drivdigital/driv-vagrant/wiki) for documentation.
+See the [wiki](https://github.com/drivdigital/driv-vagrant/wiki) for more documentation.
