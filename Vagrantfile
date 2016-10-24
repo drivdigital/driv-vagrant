@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.network "private_network", ip: "192.168.33.10"
 
-  config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=774','fmode=775']
+  config.vm.synced_folder ".", "/vagrant", :nfs => true
   config.vm.provision "fix-no-tty", type: "shell" do |s|
       s.privileged = false
       s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
