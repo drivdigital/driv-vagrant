@@ -13,9 +13,7 @@ system("
 
 Vagrant.configure(2) do |config|
 
-  ##############################################################################
-  ## Shared                                                                   ##
-  ##############################################################################
+  # Shared                                                                   ##
   config.ssh.username = 'vagrant'
   config.ssh.password = 'vagrant'
   config.vm.provider "virtualbox" do |v|
@@ -25,25 +23,19 @@ Vagrant.configure(2) do |config|
   config.vm.box_url = "http://drivdi-2200.rask17.raskesider.no/vagrant/driv02.box"
 
 
-  ##############################################################################
-  ##  vm1 - Default. With port forwarding.                                    ##
-  ##############################################################################
+  # vm1 - Private network. Default
   config.vm.define "vm1", primary: true do |vm1|
-    vm1.vm.network "forwarded_port", guest: 80, host: 8080
-    vm1.vm.network "forwarded_port", guest: 443, host: 8081
+    vm1.vm.network "private_network", ip: "192.168.33.10"
   end
 
-  ##############################################################################
-  ##  vm2 - Private network. No port forwarding.                              ##
-  ##############################################################################
+  # vm2 - Port forwarding.
   config.vm.define "vm2", autostart: false do |vm2|
-    vm2.vm.network "private_network", ip: "192.168.33.10"
+    vm2.vm.network "forwarded_port", guest: 80, host: 8080
+    vm2.vm.network "forwarded_port", guest: 443, host: 8081
   end
 
 
-  ##############################################################################
-  ## Shared                                                                   ##
-  ##############################################################################
+  # Shared
   config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=774','fmode=775']
   config.vm.provision "fix-no-tty", type: "shell" do |s|
       s.privileged = false
