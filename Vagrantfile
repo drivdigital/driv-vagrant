@@ -36,7 +36,7 @@ Vagrant.configure(2) do |config|
 
 
   # Shared
-  config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=774','fmode=775']
+  config.vm.synced_folder ".", "/vagrant", :nfs => { :mount_options => ["dmode=777","fmode=777"] }
   config.vm.provision "fix-no-tty", type: "shell" do |s|
       s.privileged = false
       s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
