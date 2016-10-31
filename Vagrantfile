@@ -26,17 +26,18 @@ Vagrant.configure(2) do |config|
   # vm1 - Private network. Default
   config.vm.define "vm1", primary: true do |vm1|
     vm1.vm.network "private_network", ip: "192.168.33.10"
+    config.vm.synced_folder ".", "/vagrant", :nfs => { :mount_options => ["dmode=774","fmode=775"] }
   end
 
   # vm2 - Port forwarding.
   config.vm.define "vm2", autostart: false do |vm2|
     vm2.vm.network "forwarded_port", guest: 80, host: 8080
     vm2.vm.network "forwarded_port", guest: 443, host: 8081
+    config.vm.synced_folder ".", "/vagrant", :mount_options => ['dmode=774','fmode=775']
   end
 
 
   # Shared
-  config.vm.synced_folder ".", "/vagrant", :nfs => { :mount_options => ["dmode=777","fmode=777"] }
   config.vm.provision "fix-no-tty", type: "shell" do |s|
       s.privileged = false
       s.inline = "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
