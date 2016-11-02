@@ -9,8 +9,11 @@ chdir( dirname( dirname( __FILE__ ) ) );
 
 // Load utility class
 require_once 'setup/class-setup.php';
+require_once 'setup/class-hosts-parser.php';
 
 $opts = getopt( '', ['after', 'before'] );
+
+$private_network = ! empty( getopt( '', [ 'port_forwarding' ] ) );
 
 if ( isset( $opts['before'] ) ) {
   // Parse through the sites in the settings and clone any repo not existing
@@ -34,30 +37,37 @@ if ( isset( $opts['before'] ) ) {
 $sites = setup::get_all_sites();
 
 if ( isset( $opts['before'] ) ) {
-  $hosts = trim( file_get_contents( '/etc/hosts' ) );
-  $save = false;
+//  $hosts = trim( file_get_contents( '/etc/hosts' ) );
+  try {
+    $hosts = new HostsParser('/etc/hosts');
+  }
+  catch (Exception $e) {
+    echo "Hosts: " . $e->getMessage() . "\n";
+    return;
+  }
 
   foreach ( $sites as $slug => $site ) {
-    // For 80 -> 8080 port forwarding.
-    if ( ! preg_match_all("/127\.0\.0\.1\s+$site/", $hosts) ) {
-      $hosts .= "\n127.0.0.1\t$site";
-      $save = true;
-    }
 
-    // For private networks. No port forwarding.
-    if ( ! preg_match_all("/192\.168\.33\.10\s+$site/", $hosts) ) {
-      $hosts .= "\n192.168.33.10\t$site";
-      $save = true;
-    }
-  }
-  if ( $save ) {
-    if ( is_writable( '/etc/hosts' ) ) {
-      $hosts .= "\n";
-      file_put_contents( '/etc/hosts', $hosts );
+    if ( $private_network ) {
+      if ( ! $hosts->exists( '192.168.33.10', $site ) ) {
+        $hosts->add( '192.168.33.10', $site );
+      }
+      else {
+        $hosts->activate( '192.168.33.10', $site );
+      }
+      $hosts->deactivate( '127.0.0.1', $site );
     }
     else {
-      setup::error( "Error: '/etc/hosts' is not writeable. Make sure this line is in your hosts file:\n127.0.0.1\t". implode( ' ', $sites ) );
+      if ( ! $hosts->exists( '127.0.0.1', $site ) ) {
+        $hosts->add( '127.0.0.1', $site );
+      }
+      else {
+        $hosts->activate( '127.0.0.1', $site );
+      }
+      $hosts->deactivate( '192.168.33.10', $site );
     }
+    $hosts->save();
+
   }
 
 }

@@ -2,18 +2,23 @@
 # vi: set ft=ruby :
 
 system("
+    port_forwarding_arg=''
+    if [ #{ARGV[0]} = 'up' ] && [ #{ARGV[1]} = 'vm2' ]; then
+      port_forwarding_arg='--port_forwarding'
+    fi
+
     if [ #{ARGV[0]} = 'up' ]; then
         echo 'Setting up /etc/hosts'
         SCRIPT=setup/setup-host.php
-        [[ -f $SCRIPT ]] && php \"$SCRIPT\" --before
+        [[ -f $SCRIPT ]] && php \"$SCRIPT\" --before ${port_forwarding_arg}
         SCRIPT=../setup/setup-host.php
-        [[ -f $SCRIPT ]] && php \"$SCRIPT\" --before
+        [[ -f $SCRIPT ]] && php \"$SCRIPT\" --before ${port_forwarding_arg}
     fi
 ")
 
 Vagrant.configure(2) do |config|
 
-  # Shared                                                                   ##
+  # Shared
   config.ssh.username = 'vagrant'
   config.ssh.password = 'vagrant'
   config.vm.provider "virtualbox" do |v|
