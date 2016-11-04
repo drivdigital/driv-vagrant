@@ -13,7 +13,7 @@ require_once 'setup/class-hosts-parser.php';
 
 $opts = getopt( '', ['after', 'before'] );
 
-$private_network = ! empty( getopt( '', [ 'port_forwarding' ] ) );
+$is_private_network_vm = empty( getopt( '', [ 'port_forwarding' ] ) );
 
 if ( isset( $opts['before'] ) ) {
   // Parse through the sites in the settings and clone any repo not existing
@@ -48,22 +48,18 @@ if ( isset( $opts['before'] ) ) {
 
   foreach ( $sites as $slug => $site ) {
 
-    if ( $private_network ) {
+    if ( $is_private_network_vm ) {
       if ( ! $hosts->exists( '192.168.33.10', $site ) ) {
         $hosts->add( '192.168.33.10', $site );
       }
-      else {
-        $hosts->activate( '192.168.33.10', $site );
-      }
+      $hosts->activate( '192.168.33.10', $site );
       $hosts->deactivate( '127.0.0.1', $site );
     }
     else {
       if ( ! $hosts->exists( '127.0.0.1', $site ) ) {
         $hosts->add( '127.0.0.1', $site );
       }
-      else {
-        $hosts->activate( '127.0.0.1', $site );
-      }
+      $hosts->activate( '127.0.0.1', $site );
       $hosts->deactivate( '192.168.33.10', $site );
     }
     $hosts->save();
