@@ -22,7 +22,7 @@ Vagrant.configure(2) do |config|
   config.ssh.username = 'vagrant'
   config.ssh.password = 'vagrant'
   config.vm.provider "virtualbox" do |v|
-    v.memory = 2048
+    v.memory = 1024
   end
   config.vm.box = "driv02"
   config.vm.box_url = "http://drivdi-2200.rask17.raskesider.no/vagrant/driv02.box"
