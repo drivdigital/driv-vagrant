@@ -3,7 +3,7 @@
 
 system("
     port_forwarding_arg=''
-    if [ #{ARGV[0]} = 'up' ] && [ #{ARGV[1]} = 'vm2' ]; then
+    if [ #{ARGV[0]} = 'up' ] && [ #{ARGV[1]} ] && [ #{ARGV[1]} = 'vm2' ]; then
       port_forwarding_arg='--port_forwarding'
     fi
 
