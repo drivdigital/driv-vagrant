@@ -4,12 +4,8 @@ defined( 'PROVISION' ) || die();
 // Get settings
 
 $GLOBALS['settings'] = [
-  'sites' => [],
+    'sites' => [],
 ];
-
-// Load plugins
-// @TODO: glob( 'setup/plugins/*' );
-require_once 'setup/plugins/file-sync/setup.php';
 
 if ( file_exists( 'config/vagrant-config.json' ) ) {
   $json = json_decode( file_get_contents( 'config/vagrant-config.json' ), true );
@@ -19,7 +15,7 @@ if ( file_exists( 'config/vagrant-config.json' ) ) {
 }
 $sites = setup::get_sites();
 foreach ( $sites as $slug => $site ) {
-  $base_path = setup::get_path( '', $slug, $site );
+  $base_path   = setup::get_path( '', $slug, $site );
   $config_json = setup::get_path( 'config.json', $slug, $site );
   if ( ! $base_path ) {
     continue;
@@ -33,7 +29,7 @@ foreach ( $sites as $slug => $site ) {
 class setup {
   static function get_sites() {
     $sites = [];
-    $dirs = glob( '*.dev' );
+    $dirs  = glob( '*.dev' );
     foreach ( $dirs as $dir ) {
       // Skip non-dirs
       if ( ! is_dir( $dir ) ) {
@@ -49,11 +45,36 @@ class setup {
       // No lock in place, go ahead.
       $slug = preg_replace( '/\W/', '_', $site );
       // Remove the dev bit at the end
-      $slug = preg_replace( '/_dev$/', '', $slug );
+      $slug         = preg_replace( '/_dev$/', '', $slug );
       $sites[$slug] = $site;
     }
     return $sites;
   }
+
+  static function get_all_sites() {
+    $dev_sites = self::get_sites();
+    $built_in_sites = self::get_built_in_sites();
+    $result = $dev_sites;
+    foreach ($built_in_sites as $built_in) {
+      $result[$built_in['slug']] = $built_in['host_name'];
+    }
+    return $result;
+  }
+
+  static function get_built_in_sites() {
+    return array_map( function ( $vhost ) {
+      return [
+          'host_name' => explode( '.conf', basename( $vhost ) )[0],
+          'slug'      => explode( '.dev.conf', basename( $vhost ) )[0],
+          'path'      => $vhost
+      ];
+    }, glob( __DIR__ . '/vhosts/*.dev.conf' ) );
+  }
+
+  static function is_private_network() {
+    return strpos( shell_exec( '/sbin/ifconfig' ), 'inet addr:192.168.33.10' ) !== false;
+  }
+
   static function update( $slug, $site ) {
     // Restructured the config system
     if ( file_exists( "setup/$site.conf" ) ) {
@@ -68,14 +89,15 @@ class setup {
     if ( file_exists( "config/$slug/$slug.sql" ) ) {
       `mv "config/$slug/$slug.sql" "config/$slug.sql"`;
     }
-
   }
 
   static function get_config_file( $system ) {
-    if ( 'wordpress' == $system )
+    if ( 'wordpress' == $system ) {
       return 'wp-config.php';
-    if ( 'magento' == $system )
+    }
+    if ( 'magento' == $system ) {
       return 'app/etc/local.xml';
+    }
     return FALSE;
   }
 
@@ -91,6 +113,7 @@ class setup {
     echo "The CMS could not be identified";
     return false;
   }
+
   static function create_config( $slug, $site, $system, $db_prefix ) {
     if ( 'wordpress' == $system ) {
       $sample = "$site/wp-config-sample.php";
@@ -104,15 +127,16 @@ class setup {
       $contents = file_get_contents( $sample );
       $contents = strtr( $contents, [
         // @TODO:
-        '' => '',
+          '' => '',
       ] );
       file_put_contents( $config, $contents );
       echo "Creating a config file for $system";
       return;
     }
     if ( 'magento' == $system ) {
-      if ( !file_exists( "$site/errors/local.xml" ) )
+      if ( ! file_exists( "$site/errors/local.xml" ) ) {
         `cp "$site/errors/local.xml.sample" "$site/errors/local.xml"`;
+      }
       $sample = "$site/app/etc/local.xml.template";
       $config = "$site/app/etc/local.xml";
       if ( file_exists( $config ) ) {
@@ -121,19 +145,19 @@ class setup {
       }
       $contents = file_get_contents( $sample );
       $contents = strtr( $contents, [
-        '{{date}}'               => '<![CDATA[Mon, 01 Jan 2015 00:00:00 +0000]]>',
-        '{{key}}'                => '<![CDATA[vagrant]]>',
-        '{{db_prefix}}'          => '<![CDATA['.$db_prefix.']]>',
-        '{{db_host}}'            => '<![CDATA[localhost]]>',
-        '{{db_user}}'            => '<![CDATA[root]]>',
-        '{{db_pass}}'            => '<![CDATA[]]>',
-        '{{db_name}}'            => '<![CDATA['. $slug. ']]>',
-        '{{db_init_statemants}}' => '<![CDATA[SET NAMES utf8]]>',
-        '{{db_model}}'           => '<![CDATA[mysql4]]>',
-        '{{db_type}}'            => '<![CDATA[pdo_mysql]]>',
-        '{{db_pdo_type}}'        => '<![CDATA[]]>',
-        '{{session_save}}'       => '<![CDATA[files]]>',
-        '{{admin_frontname}}'    => '<![CDATA[admin]]>',
+          '{{date}}'               => '<![CDATA[Mon, 01 Jan 2015 00:00:00 +0000]]>',
+          '{{key}}'                => '<![CDATA[vagrant]]>',
+          '{{db_prefix}}'          => '<![CDATA[' . $db_prefix . ']]>',
+          '{{db_host}}'            => '<![CDATA[localhost]]>',
+          '{{db_user}}'            => '<![CDATA[root]]>',
+          '{{db_pass}}'            => '<![CDATA[]]>',
+          '{{db_name}}'            => '<![CDATA[' . $slug . ']]>',
+          '{{db_init_statemants}}' => '<![CDATA[SET NAMES utf8]]>',
+          '{{db_model}}'           => '<![CDATA[mysql4]]>',
+          '{{db_type}}'            => '<![CDATA[pdo_mysql]]>',
+          '{{db_pdo_type}}'        => '<![CDATA[]]>',
+          '{{session_save}}'       => '<![CDATA[files]]>',
+          '{{admin_frontname}}'    => '<![CDATA[admin]]>',
       ] );
       file_put_contents( $config, $contents );
       echo "Creating a config file for $system";
@@ -143,16 +167,18 @@ class setup {
     echo "No config file will be created";
     return;
   }
+
   static function db_prefix( $slug, $site, $system ) {
-    if ( !file_exists( "config/$slug/$slug.sql" ) )
+    if ( ! file_exists( "config/$slug/$slug.sql" ) ) {
       return '';
+    }
     $content = `head -n1000 config/$slug/$slug.sql | grep "CREATE TABLE"`;
     // echo "\n\n----------------\n$content\n----------------\n\n";
-    $lines = explode( "\n", $content );
-    $assumed_prefix = FALSE;
+    $lines            = explode( "\n", $content );
+    $assumed_prefix   = FALSE;
     $wrong_assumption = FALSE;
     // Loop through each CREATE TABLE line
-    foreach ($lines as $line) {
+    foreach ( $lines as $line ) {
       // Detect the table name with some fancy regex
       if ( preg_match( '/\s`?(\S+_\w+)\W*$/', $line, $matches ) ) {
         // Break the table name into parts
@@ -160,16 +186,18 @@ class setup {
         $parts = explode( '_', $table );
 
         // No assumption made yet. Make one now
-        if ( !$assumed_prefix )
+        if ( ! $assumed_prefix ) {
           $assumed_prefix = $parts[0];
+        }
 
         // If any table is not prefixed then we have an incorrect assumption
-        if ( $parts[0] != $assumed_prefix )
+        if ( $parts[0] != $assumed_prefix ) {
           $wrong_assumption = TRUE;
+        }
       }
     }
 
-    if ( !$wrong_assumption ) {
+    if ( ! $wrong_assumption ) {
       echo "Detected \"$assumed_prefix\" as the table prefix";
       return $assumed_prefix;
     }
@@ -179,18 +207,20 @@ class setup {
   static function error( $message ) {
     $cols = 120;
     echo "\x1b[31m";
-    for ( $i = 0; $i <= $cols; $i++ )
+    for ( $i = 0; $i <= $cols; $i++ ) {
       echo "=";
+    }
     echo "\n";
     echo "$message\n";
-    for ( $i = 0; $i <= $cols; $i++ )
+    for ( $i = 0; $i <= $cols; $i++ ) {
       echo "=";
+    }
     echo "\n";
     echo "\x1b[0m";
   }
 
   static function check_path( $path, $slug, $site ) {
-    return (boolean) self::get_path( $path, $slug, $site );
+    return (boolean)self::get_path( $path, $slug, $site );
   }
 
   static function get_path( $path, $slug, $site ) {

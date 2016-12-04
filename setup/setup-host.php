@@ -9,8 +9,11 @@ chdir( dirname( dirname( __FILE__ ) ) );
 
 // Load utility class
 require_once 'setup/class-setup.php';
+require_once 'setup/class-hosts-parser.php';
 
 $opts = getopt( '', ['after', 'before'] );
+
+$is_private_network_vm = empty( getopt( '', [ 'port_forwarding' ] ) );
 
 if ( isset( $opts['before'] ) ) {
   // Parse through the sites in the settings and clone any repo not existing
@@ -31,29 +34,38 @@ if ( isset( $opts['before'] ) ) {
 }
 
 
-$sites = setup::get_sites();
+$sites = setup::get_all_sites();
 
 if ( isset( $opts['before'] ) ) {
-  $hosts = trim( file_get_contents( '/etc/hosts' ) );
-  $save = false;
+//  $hosts = trim( file_get_contents( '/etc/hosts' ) );
+  try {
+    $hosts = new HostsParser('/etc/hosts');
+  }
+  catch (Exception $e) {
+    echo "Hosts: " . $e->getMessage() . "\n";
+    return;
+  }
+
   foreach ( $sites as $slug => $site ) {
 
-    // Ignore found sites
-    if ( FALSE !== strpos( $hosts, $site ) )
-      continue;
-
-    $hosts .= "\n127.0.0.1\t$site";
-    $save = true;
-  }
-  if ( $save ) {
-    if ( is_writable( '/etc/hosts' ) ) {
-      $hosts .= "\n";
-      file_put_contents( '/etc/hosts', $hosts );
+    if ( $is_private_network_vm ) {
+      if ( ! $hosts->exists( '192.168.33.10', $site ) ) {
+        $hosts->add( '192.168.33.10', $site );
+      }
+      $hosts->activate( '192.168.33.10', $site );
+      $hosts->deactivate( '127.0.0.1', $site );
     }
     else {
-      setup::error( "Error: '/etc/hosts' is not writeable. Make sure this line is in your hosts file:\n127.0.0.1\t". implode( ' ', $sites ) );
+      if ( ! $hosts->exists( '127.0.0.1', $site ) ) {
+        $hosts->add( '127.0.0.1', $site );
+      }
+      $hosts->activate( '127.0.0.1', $site );
+      $hosts->deactivate( '192.168.33.10', $site );
     }
+    $hosts->save();
+
   }
+
 }
 if ( isset( $opts['after'] ) ) {
   // Nothing yet…

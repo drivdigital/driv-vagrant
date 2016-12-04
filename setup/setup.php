@@ -11,9 +11,6 @@ chdir( '/vagrant' );
 // Load utility class
 require_once 'setup/class-setup.php';
 
-// A temporary fix for to add wpcli to the box
-require_once 'setup/tmp-fix.php';
-
 // Load the vhost template
 $vhost_template = file_get_contents( 'setup/vhost-template.conf' );
 
@@ -41,10 +38,10 @@ foreach ( $sites as $slug => $site ) {
     // Get the clone url
     $git_url = `cd /vagrant/$site/ && git config --get remote.origin.url`;
     if ( $git_url ) {
-      $settings = [
-        'package' => '', // @TODO: Find the package name
-        'name' => $site,
-        'git'  => trim( $git_url ),
+      $settings    = [
+          'package' => '', // @TODO: Find the package name
+          'name'    => $site,
+          'git'     => trim( $git_url ),
       ];
       $config_json = "$base_path/config.json";
       file_put_contents( $config_json, json_encode( $settings ) );
@@ -53,7 +50,7 @@ foreach ( $sites as $slug => $site ) {
 
   // Run update and setup a few utiliy variables
   setup::update( $slug, $site );
-  $system = setup::identify( $slug, $site );
+  $system    = setup::identify( $slug, $site );
   $db_prefix = setup::db_prefix( $slug, $site, $system );
 
   // Config files
@@ -84,7 +81,7 @@ foreach ( $sites as $slug => $site ) {
   $vhost_file = setup::get_path( "$slug.dev.conf", $slug, $site );
   if ( ! $vhost_file ) {
     $site_vhost = str_replace( '%SITE', $site, $vhost_template );
-    $vhost_file = $base_path ."/$slug.dev.conf";
+    $vhost_file = $base_path . "/$slug.dev.conf";
     file_put_contents( $vhost_file, $site_vhost );
   }
   // Link the vhost conf to apache2
@@ -94,15 +91,13 @@ foreach ( $sites as $slug => $site ) {
   // Enable the site
   `a2ensite '$site'`;
 
-
   // Database
   // Check the db-lock file
-
   if ( file_exists( '/.db-installed' ) ) {
     continue;
   }
 
-  echo "Seting up database, '$slug'.\n";
+  echo "Seting up database, '$slug'\n";
   `mysql -u root -e "CREATE DATABASE IF NOT EXISTS $slug"`;
   echo "Checking dev.sql $system";
   $dev_sql_created = false;
@@ -120,6 +115,19 @@ foreach ( $sites as $slug => $site ) {
   // Add the database to the saving tool
   `echo "mysqldump -u root $slug > /vagrant/config/$slug.sql" >> save-db`;
 }
+
+// Set up built-in sites
+foreach ( setup::get_built_in_sites() as $built_in ) {
+  $host_name = $built_in['host_name'];
+  $path = $built_in['path'];
+  // Link the vhost conf to apache2
+  if ( ! file_exists( "/etc/apache2/sites-available/$host_name.conf" ) ) {
+    `ln -s '$path' /etc/apache2/sites-available`;
+  }
+  // Enable the site
+  `a2ensite '$host_name'`;
+}
+
 // Remove temporary sql file
 if ( file_exists( '.tmp.sql' ) ) {
   `rm .tmp.sql`;
@@ -133,8 +141,16 @@ if ( file_exists( 'config/dev.sql' ) && ! file_exists( '/.db-installed' ) ) {
 // Create a lock file for databases
 `touch /.db-installed`;
 `chmod 744 save-db`;
-// Add the command
-`echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.zshrc`;
+
+// Add the save-db command
+$zshrc = file_get_contents( '/home/vagrant/.zshrc' );
+if ( ! preg_match( "/alias save-db='\/vagrant\/save-db'/", $zshrc ) ) {
+  `echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.zshrc`;
+}
+$bashrc = file_get_contents( '/home/vagrant/.bashrc' );
+if ( ! preg_match( "/alias save-db='\/vagrant\/save-db'/", $bashrc ) ) {
+  `echo "alias save-db='/vagrant/save-db'" >> /home/vagrant/.bashrc`;
+}
 
 foreach ( $sites as $slug => $site ) {
   // Vagrant files should start with `defined( 'PROVISION' ) || die();`
@@ -150,15 +166,29 @@ foreach ( $sites as $slug => $site ) {
   }
 }
 
-// @TODO each plugin :: setup();
-File_Sync::setup();
+// Run any global provisioners
+if ( ! empty( $GLOBALS['settings']['sites'] ) ) {
+  require_once( __DIR__ . '/provisioners/Installer.php' );
+  DrivDigital\Vagrant\Provisioners\Installer::install( $GLOBALS['settings']['sites'] );
+}
+
+// Copy the box.dev source
+`cp -R /vagrant/setup/box.dev/* /home/vagrant/sites/box.dev`;
+`sudo chown -R vagrant:vagrant /home/vagrant/sites/box.dev`;
 
 // Restart apache
 `service apache2 restart`;
 
 // Success
-echo "Success, your sites are now available at the following urls:\n";
+echo "\nTools available at:\n";
+foreach ( setup::get_built_in_sites() as $built_in ) {
+  $port = !setup::is_private_network() ? ':8080':'';
+  $host = $built_in['host_name'];
+  echo "http://$host$port\n";
+}
 
+echo "\nSuccess, your sites are now available at the following urls:\n";
 foreach ( $sites as $site ) {
-  echo "http://$site:8080/\n";
+  $port = !setup::is_private_network() ? ':8080':'';
+  echo "http://$site$port\n";
 }

@@ -1,0 +1,21 @@
+@import "vendor/hack.css";
+@import "vendor/hack-dark-gray.css";
+
+h1::after {
+    content: "========================================================================================================================================================================================================" !important;
+}
+
+.logo {
+    margin-bottom: 20px;
+}
+
+.uptime {
+    margin: 20px 0;
+}
+
+footer {
+    border-top: 1px solid #ccc;
+    margin-top: 5rem !important;
+    padding: 3rem 0 !important;
+}
+
