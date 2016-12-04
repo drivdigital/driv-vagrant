@@ -101,10 +101,15 @@ foreach ( $sites as $slug => $site ) {
   `mysql -u root -e "CREATE DATABASE IF NOT EXISTS $slug"`;
   echo "Checking dev.sql $system";
   $dev_sql_created = false;
-  if ( file_exists( "config/$slug.sql" ) ) {
+  if ( file_exists( "config/$slug.sql" ) || file_exists( "config/$slug.sql.gz" ) ) {
     `echo 'SET foreign_key_checks=0;' > .tmp.sql`;
-    `cat "config/$slug.sql" >> .tmp.sql`;
-    echo "Importing database for $slug";
+    if ( file_exists( "config/$slug.sql" ) ) {
+      `cat "config/$slug.sql" >> .tmp.sql`;
+      echo "Importing database for {$slug}.sql";
+    } else {
+      `cat config/{$slug}.sql.gz | gunzip >> .tmp.sql`;
+      echo "Importing database for {$slug}.sql.gz";
+    }
     `mysql -u root $slug < .tmp.sql`;
     $dev_sql = setup::get_path( 'dev.sql', $slug, $site );
     if ( $dev_sql ) {
@@ -113,7 +118,7 @@ foreach ( $sites as $slug => $site ) {
     }
   }
   // Add the database to the saving tool
-  `echo "mysqldump -u root $slug > /vagrant/config/$slug.sql" >> save-db`;
+  `echo "mysqldump -u root $slug | gzip > /vagrant/config/$slug.sql" >> save-db`;
 }
 
 // Set up built-in sites
