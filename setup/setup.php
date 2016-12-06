@@ -118,7 +118,7 @@ foreach ( $sites as $slug => $site ) {
     }
   }
   // Add the database to the saving tool
-  `echo "mysqldump -u root $slug | gzip > /vagrant/config/$slug.sql" >> save-db`;
+  `echo "mysqldump -u root $slug | gzip > /vagrant/config/$slug.sql.gz" >> save-db`;
 }
 
 // Set up built-in sites
